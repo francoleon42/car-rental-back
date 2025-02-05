@@ -1,6 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 import { Car } from '../../car/entities/car.entity';
-import { CarPicture } from 'src/common/enums/car-picture.enum';
+import { CarPicture } from '../../common/enums/car-picture.enum';
 
 @Entity()
 export class Picture {

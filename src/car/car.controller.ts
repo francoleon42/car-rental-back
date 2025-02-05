@@ -3,7 +3,7 @@ import { CarService } from './car.service';
 import { CreateCarDto } from './dto/create-car.dto';
 import { UpdateCarDto } from './dto/update-car.dto';
 
-@Controller('car')
+@Controller('/cars')
 export class CarController {
   constructor(private readonly carService: CarService) {}
 
@@ -12,14 +12,14 @@ export class CarController {
     return this.carService.create(createCarDto);
   }
 
-  @Get()
-  findAll() {
+  @Get("")
+  obtenerTodos() {
     return this.carService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.carService.findOne(+id);
+  @Get('/detalle/:id')
+  obtenerDetalle(@Param('id') id: number) {
+    return this.carService.obtenerDetalle(+id);
   }
 
   @Patch(':id')

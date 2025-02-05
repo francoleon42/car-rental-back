@@ -1,13 +1,14 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
-import { App } from 'supertest/types';
 import { AppModule } from './../src/app.module';
 
-describe('AppController (e2e)', () => {
-  let app: INestApplication<App>;
+jest.setTimeout(30000);
 
-  beforeEach(async () => {
+describe('AppController (e2e)', () => {
+  let app: INestApplication;
+
+  beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
     }).compile();
@@ -16,10 +17,41 @@ describe('AppController (e2e)', () => {
     await app.init();
   });
 
+  afterAll(async () => {
+    await app.close();
+  });
+
   it('/ (GET)', () => {
     return request(app.getHttpServer())
       .get('/')
       .expect(200)
       .expect('Hello World!');
+  });
+
+  it('/cars (GET) obtener los cars', async () => {
+    const response = await request(app.getHttpServer()).get('/cars').expect(200);
+    
+    expect(response.body).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          id: 1,
+          brand: 'Toyota',
+          model: 'Corolla',
+          color: 'Red',
+          passengers: 5,
+          ac: true,
+          pricePerDay: 50,
+        }),
+        expect.objectContaining({
+          id: 2,
+          brand: 'Honda',
+          model: 'Civic',
+          color: 'Blue',
+          passengers: 5,
+          ac: true,
+          pricePerDay: 45,
+        }),
+      ])
+    );
   });
 });

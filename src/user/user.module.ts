@@ -9,7 +9,7 @@ import { UserRepository } from './user.repository';
     TypeOrmModule.forFeature([User]),
   ],
   providers: [
-    UserRepository, // Ahora Nest sabe cómo inyectar DataSource
+    UserRepository, 
   ],
   exports: [UserRepository],
 })

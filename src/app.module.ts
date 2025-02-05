@@ -11,7 +11,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { DatabaseSeedService } from './database-seed.service'; 
 import { UserRepository } from './user/user.repository';
 
-import { CarModule } from './car/car.module'; // <-- Añade esto
+import { CarModule } from './car/car.module';
 import { PictureModule } from './picture/picture.module'; 
 import { RentModule } from './rent/rent.module'; 
 import { DocumentModule } from './document/document.module'; 

@@ -1,6 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 import { Document } from '../../document/entities/document.entity';
 import { Role } from '../../common/enums/role.enum';
+import { Rent } from '../../rent/entities/rent.entity';
 
 @Entity()
 export class User {
@@ -40,6 +41,13 @@ export class User {
   
   @Column({ type: 'timestamp', nullable: true }) 
   updatedAt: Date;
+
+  
+  @OneToMany(() => Rent, (rent) => rent.user)
+  rents: Rent[];
+
+  @OneToMany(() => Rent, (rent) => rent.admin)
+  approvedRents: Rent[];
   
 
 }

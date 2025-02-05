@@ -2,22 +2,31 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { User } from './user/entities/user.entity';
+import { UserModule } from './user/user.module';
 import { Document } from './document/entities/document.entity';
 import { Rent } from './rent/entities/rent.entity';
 import { Car } from './car/entities/car.entity';
 import { Picture } from './picture/entities/picture.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { DatabaseSeedService } from './database-seed.service'; 
+import { UserRepository } from './user/user.repository';
+
+import { CarModule } from './car/car.module'; // <-- Añade esto
+import { PictureModule } from './picture/picture.module'; 
+import { RentModule } from './rent/rent.module'; 
+import { DocumentModule } from './document/document.module'; 
+
 
 import * as dotenv from 'dotenv';
 dotenv.config();
 
 @Module({
   imports: [
-    User,
-    Document,
-    Rent,
-    Car,
-    Picture,
+    UserModule,
+    DocumentModule,
+    RentModule,
+    CarModule,
+    PictureModule,
     TypeOrmModule.forRoot({
       type: 'mysql',
       host: process.env.DB_HOST,
@@ -27,10 +36,11 @@ dotenv.config();
       database: process.env.DB_NAME,
       entities: [Car, Picture,Rent,Document,User], 
       synchronize: true, 
+      dropSchema: true, 
       logging: true,  
     }),
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService,DatabaseSeedService],
 })
 export class AppModule {}

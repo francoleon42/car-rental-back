@@ -12,7 +12,7 @@ export class CarController {
     return this.carService.create(createCarDto);
   }
 
-  @Get("")
+  @Get()
   obtenerTodos() {
     return this.carService.findAll();
   }

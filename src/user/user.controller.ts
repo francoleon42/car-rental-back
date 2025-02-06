@@ -2,10 +2,16 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { User } from './entities/user.entity';
+import { Repository } from 'typeorm';
 
 @Controller('user')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(private readonly userService: UserService,
+              @InjectRepository(User)
+              private readonly userRepository: Repository<User>,
+  ) {}
 
   //AUTH:
   @Post()
@@ -15,9 +21,15 @@ export class UserController {
 
 // usuario:
   //TODO : EL usuario podra completar datos faltantes que no se llenaron en el registro
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update(+id, updateUserDto);
+  @Patch("/actualizar")
+  async actualizar(@Body() updateUserDto: UpdateUserDto) {
+    //modificar con obtener el usuario logueado
+    const id = 1;
+    const user =  await this.userRepository.findOneBy({ id });
+    if (!user) {
+      throw new Error('User not found');
+    }
+    return this.userService.actualizar(user, updateUserDto);
   }
 
   @Delete(':id')

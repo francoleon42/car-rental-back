@@ -20,6 +20,7 @@ export class RentController {
   // una solicitud renta
   @Post('/crear')
   async create(@Body() createRentDto: CreateRentDto) {
+    //modificar con obtener el usuario logueado
     const id = 1;
     const user = await await this.userRepository.findOneBy({ id });
     if (!user) {

@@ -28,23 +28,30 @@ export class DatabaseSeedService {
 
     // CREAR USUARIOS
     const admin = this.userRepository.create({
-      firstName: 'Admin',
-      lastName: 'User',
-      dob: new Date('1980-01-15'),
+      // firstName: 'Admin',
+      // lastName: 'User',
+      // dob: new Date('1980-01-15'),
+      // address: '123 Admin Street',
+      // country: 'USA',
       email: 'admin@rentalcars.com',
-      address: '123 Admin Street',
-      country: 'USA',
+      password:"1234",
       role: Role.ADMIN,
+      createdAt: new Date(),
+      updatedAt: new Date()
     });
 
     const client = this.userRepository.create({
-      firstName: 'John',
-      lastName: 'Doe',
-      dob: new Date('1995-05-20'),
+      // firstName: 'John',
+      // lastName: 'Doe',
+      // dob: new Date('1995-05-20'),
+      // email: 'john.doe@example.com',
+      // address: '456 Client Avenue',
+      // country: 'Canada',
       email: 'john.doe@example.com',
-      address: '456 Client Avenue',
-      country: 'Canada',
+      password:"1234",
       role: Role.CLIENT,
+      createdAt: new Date(),
+      updatedAt: new Date()
     });
 
     await this.userRepository.save([admin, client]);

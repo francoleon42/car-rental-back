@@ -20,8 +20,7 @@ export class UserController {
   }
 
 // usuario:
-  //TODO : EL usuario podra completar datos faltantes que no se llenaron en el registro
-  @Patch("/actualizar")
+  @Patch('/actualizar')
   async actualizar(@Body() updateUserDto: UpdateUserDto) {
     //modificar con obtener el usuario logueado
     const id = 1;
@@ -32,10 +31,6 @@ export class UserController {
     return this.userService.actualizar(user, updateUserDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.userService.remove(+id);
-  }
   @Get()
   findAll() {
     return this.userService.findAll();

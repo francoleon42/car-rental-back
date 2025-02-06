@@ -8,7 +8,4 @@ export class UpdateUserDto {
   dob: Date;
   address: string;
   country: string;
-  documents: Document[];
-  createdAt: Date;
-  updatedAt: Date;
 }

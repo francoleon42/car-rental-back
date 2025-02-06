@@ -8,23 +8,27 @@ export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
-  firstName: string;
+  @Column({ nullable: true })
+  firstName?: string;
 
-  @Column()
-  lastName: string;
+  @Column({ nullable: true })
+  lastName?: string;
 
-  @Column({ type: 'date' })
-  dob: Date;
+  @Column({ type: 'date', nullable: true })
+  dob?: Date;
 
   @Column({ unique: true })
   email: string;
 
   @Column()
-  address: string;
+  password: string;
 
-  @Column()
-  country: string;
+  @Column({ nullable: true })
+  address?: string;
+
+
+  @Column({ nullable: true })
+  country?: string;
 
   @Column({
     type: 'enum',

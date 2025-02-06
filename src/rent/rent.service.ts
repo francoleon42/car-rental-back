@@ -13,8 +13,7 @@ export class RentService {
     @InjectRepository(Rent)
     private readonly rentRepository: Repository<Rent>,
     private readonly carService: CarService,
-  ) {
-  }
+  ) {}
 
   async create(createRentDto: CreateRentDto, user: User) {
     const car = await this.carService.obtenerCarPorID(createRentDto.idCarARentar);

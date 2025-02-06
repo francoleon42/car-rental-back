@@ -9,15 +9,18 @@ import { PictureRepository } from '../picture/picture.repository';
 import { CarDetalleResponseDTO } from './dto/car-detalle-response-dto';
 import { Car } from './entities/car.entity';
 import { PictureResponseDto } from '../picture/dto/picture-response-dto';
+import { InjectRepository } from '@nestjs/typeorm';
 
 
 @Injectable()
 export class CarService {
-  private pictureRepository: PictureRepository;
+  // private pictureRepository: PictureRepository;
 
   constructor(
-    private carRepository: CarRepository,
-  ) {}
+    @InjectRepository(Car)
+    private readonly carRepository: CarRepository,
+  ) {
+  }
 
   create(createCarDto: CreateCarDto) {
     return 'This action adds a new car';
@@ -25,11 +28,11 @@ export class CarService {
 
   async findAll() {
     const cars = await this.carRepository.find();
-    return cars.map(car => 
+    return cars.map(car =>
       plainToInstance(CarResponseDTO, car, {
-        excludeExtraneousValues: true, 
-        enableImplicitConversion: true 
-      })
+        excludeExtraneousValues: true,
+        enableImplicitConversion: true,
+      }),
     );
   }
 
@@ -37,7 +40,7 @@ export class CarService {
     const car = await this.carRepository.findOne({
       where: { id },
       relations: ['img'],
-      loadEagerRelations: false
+      loadEagerRelations: false,
     });
 
     if (!car) {
@@ -51,6 +54,15 @@ export class CarService {
 
   }
 
+  async obtenerCarPorID(id: number) {
+    const car = await  this.carRepository.findOne(
+      {where: {id: id}}
+    )
+    if (!car) {
+      throw new Error('Car not found');
+    }
+    return car;
+  }
 
   update(id: number, updateCarDto: UpdateCarDto) {
     return `This action updates a #${id} car`;

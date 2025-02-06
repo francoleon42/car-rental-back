@@ -8,13 +8,13 @@ import { Rent } from './rent/entities/rent.entity';
 import { Car } from './car/entities/car.entity';
 import { Picture } from './picture/entities/picture.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { DatabaseSeedService } from './database-seed.service'; 
+import { DatabaseSeedService } from './database-seed.service';
 import { UserRepository } from './user/user.repository';
 
 import { CarModule } from './car/car.module';
-import { PictureModule } from './picture/picture.module'; 
-import { RentModule } from './rent/rent.module'; 
-import { DocumentModule } from './document/document.module'; 
+import { PictureModule } from './picture/picture.module';
+import { RentModule } from './rent/rent.module';
+import { DocumentModule } from './document/document.module';
 
 
 import * as dotenv from 'dotenv';
@@ -34,13 +34,15 @@ dotenv.config();
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
-      entities: [Car, Picture,Rent,Document,User], 
-      synchronize: true, 
-      dropSchema: true, 
-      logging: true,  
+      entities: [Car, Picture,Rent,Document,User],
+      synchronize: true,
+      dropSchema: true,
+      logging: true,
     }),
   ],
   controllers: [AppController],
   providers: [AppService,DatabaseSeedService],
 })
 export class AppModule {}
+
+

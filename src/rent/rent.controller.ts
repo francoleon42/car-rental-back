@@ -7,21 +7,21 @@ import { UpdateRentDto } from './dto/update-rent.dto';
 export class RentController {
   constructor(private readonly rentService: RentService) {}
 
+  // usuario :
+  //TODO :  Usuario va a poder completar formulario basico para generar una solicitud a la renta
   @Post()
   create(@Body() createRentDto: CreateRentDto) {
     return this.rentService.create(createRentDto);
   }
 
+  // admin :
+  //TODO:ver todos las solicitodes de renta ( todas las rentas sin aceptar)
   @Get()
   findAll() {
     return this.rentService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.rentService.findOne(+id);
-  }
-
+//TODO:  el admin va a poder aceptar o rechazar una renta
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateRentDto: UpdateRentDto) {
     return this.rentService.update(+id, updateRentDto);

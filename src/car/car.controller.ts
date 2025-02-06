@@ -6,12 +6,7 @@ import { UpdateCarDto } from './dto/update-car.dto';
 @Controller('/cars')
 export class CarController {
   constructor(private readonly carService: CarService) {}
-
-  @Post()
-  create(@Body() createCarDto: CreateCarDto) {
-    return this.carService.create(createCarDto);
-  }
-
+//acceso : usuario
   @Get()
   obtenerTodos() {
     return this.carService.findAll();
@@ -22,13 +17,13 @@ export class CarController {
     return this.carService.obtenerDetalle(+id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateCarDto: UpdateCarDto) {
-    return this.carService.update(+id, updateCarDto);
+
+  //acceso: admin
+  // TODO : EL admin va a poder subir autos (con sus pictures)
+  @Post()
+  create(@Body() createCarDto: CreateCarDto) {
+    return this.carService.create(createCarDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.carService.remove(+id);
-  }
+
 }

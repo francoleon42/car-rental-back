@@ -6,13 +6,16 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Rent } from '../rent/entities/rent.entity';
 import { Repository } from 'typeorm';
 import { CarService } from '../car/car.service';
+import { plainToInstance } from 'class-transformer';
+import { CarResponseDTO } from '../car/dto/car-response-dto';
+import { UsuarioResponseDto } from './dto/usuario-response-dto';
 
 @Injectable()
 export class UserService {
 
   constructor(
     @InjectRepository(User)
-    private readonly usuarioRepository: Repository<User>,
+    private readonly userRepository: Repository<User>,
   ) {
   }
 
@@ -24,8 +27,12 @@ export class UserService {
     return `This action returns all user`;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  async findOne(id: number) {
+    const user =  await this.userRepository.findOneBy({ id });
+    return plainToInstance(UsuarioResponseDto, user, {
+      excludeExtraneousValues: true,
+      enableImplicitConversion: true,
+    })
   }
 
   async actualizar(usuario: User, updateUserDto: UpdateUserDto) {
@@ -36,7 +43,7 @@ export class UserService {
     usuario.country = updateUserDto.country;
     usuario.updatedAt = new Date();
 
-    return this.usuarioRepository.save(usuario);
+    return this.userRepository.save(usuario);
   }
 
   remove(id: number) {

@@ -36,8 +36,13 @@ export class UserController {
     return this.userService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.userService.findOne(+id);
+  @Get('/informacion')
+  async findOne() {
+    const id = 1;
+    const user =  await this.userRepository.findOneBy({ id });
+    if (!user) {
+      throw new Error('User not found');
+    }
+    return this.userService.findOne(user.id);
   }
 }

@@ -19,11 +19,12 @@ export class CarController {
 
 
   //acceso: admin
-  // TODO : EL admin va a poder subir autos (con sus pictures)
-  @Post()
+  //  EL admin va a poder subir autos (con sus pictures)
+  @Post('/crear')
   create(@Body() createCarDto: CreateCarDto) {
     return this.carService.create(createCarDto);
   }
+
 
 
 }

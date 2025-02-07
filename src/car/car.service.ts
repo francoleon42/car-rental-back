@@ -10,6 +10,9 @@ import { CarDetalleResponseDTO } from './dto/car-detalle-response-dto';
 import { Car } from './entities/car.entity';
 import { PictureResponseDto } from '../picture/dto/picture-response-dto';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Picture } from '../picture/entities/picture.entity';
+import { CreatePictureDto } from '../picture/dto/create-picture.dto';
+import { CarPicture } from '../common/enums/car-picture.enum';
 
 
 @Injectable()
@@ -18,12 +21,29 @@ export class CarService {
 
   constructor(
     @InjectRepository(Car)
-    private readonly carRepository: CarRepository,
+    private readonly carRepository: CarRepository
   ) {
   }
 
   create(createCarDto: CreateCarDto) {
-    return 'This action adds a new car';
+    const car = new Car();
+    car.brand = createCarDto.brand;
+    car.model = createCarDto.model;
+    car.color = createCarDto.color;
+    car.passengers = createCarDto.passengers;
+    car.ac = createCarDto.ac;
+    car.pricePerDay = createCarDto.pricePerDay;
+    car.createdAt = new Date();
+    car.updatedAt = new Date();
+    this.carRepository.save(car);
+
+    return {
+      brand: car.brand,
+      model: car.model,
+      color: car.color,
+      passengers: car.passengers,
+      createdAt: car.createdAt,
+    };
   }
 
   async findAll() {
@@ -55,9 +75,9 @@ export class CarService {
   }
 
   async obtenerCarPorID(id: number) {
-    const car = await  this.carRepository.findOne(
-      {where: {id: id}}
-    )
+    const car = await this.carRepository.findOne(
+      { where: { id: id } },
+    );
     if (!car) {
       throw new Error('Car not found');
     }

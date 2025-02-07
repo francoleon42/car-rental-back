@@ -26,20 +26,8 @@ export class DatabaseSeedService {
     await this.carRepository.delete({});
     await this.userRepository.delete({});
 
-    // CREAR USUARIOS
-    const admin = this.userRepository.create({
-      // firstName: 'Admin',
-      // lastName: 'User',
-      // dob: new Date('1980-01-15'),
-      // address: '123 Admin Street',
-      // country: 'USA',
-      email: 'admin@rentalcars.com',
-      password:"1234",
-      role: Role.ADMIN,
-      createdAt: new Date(),
-      updatedAt: new Date()
-    });
 
+    // CREAR USUARIOS
     const client = this.userRepository.create({
       // firstName: 'John',
       // lastName: 'Doe',
@@ -54,7 +42,21 @@ export class DatabaseSeedService {
       updatedAt: new Date()
     });
 
-    await this.userRepository.save([admin, client]);
+    const admin = this.userRepository.create({
+      // firstName: 'Admin',
+      // lastName: 'User',
+      // dob: new Date('1980-01-15'),
+      // address: '123 Admin Street',
+      // country: 'USA',
+      email: 'admin@rentalcars.com',
+      password:"1234",
+      role: Role.ADMIN,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    });
+
+
+    await this.userRepository.save([client, admin]);
 
     // CREAR AUTOS
     const toyota = this.carRepository.create({

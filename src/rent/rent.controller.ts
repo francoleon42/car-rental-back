@@ -78,4 +78,9 @@ export class RentController {
     return this.rentService.rechazar(userAdmin,id);
   }
 
+  @Get('cliente/:idCliente')
+  async obtenerRentasDeCliente(@Param('idCliente') id: number){
+    return this.rentService.obtenerRentasDeCliente(id);
+  }
+
 }

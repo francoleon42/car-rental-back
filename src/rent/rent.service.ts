@@ -73,8 +73,7 @@ export class RentService {
 
   async obtenerSolicitudesDeUsuario(usuario: User) {
     const rents = await this.rentRepository.find({
-      where: { user: usuario },
-      relations: ['car'],
+      where: { user: usuario }
     });
     return rents.map(rent =>
       plainToInstance(ResponseRentDto, rent, {
@@ -139,6 +138,22 @@ export class RentService {
       admin: rent.admin.email,
       updatedAt: rent.updatedAt,
     };
+  }
+
+
+  async obtenerRentasDeCliente(id: number) {
+    const rents = await this.rentRepository
+      .createQueryBuilder('rent')
+      .innerJoinAndSelect('rent.user', 'user')
+      .where('user.id = :id', { id })
+      .getMany();
+
+    return rents.map(rent =>
+      plainToInstance(ResponseRentDto, rent, {
+        excludeExtraneousValues: true,
+        enableImplicitConversion: true,
+      }),
+    );
   }
 
   update(id: number, updateRentDto: UpdateRentDto) {

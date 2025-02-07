@@ -31,9 +31,10 @@ export class UserController {
     return this.userService.actualizar(user, updateUserDto);
   }
 
-  @Get()
-  findAll() {
-    return this.userService.findAll();
+  //admin :
+  @Get('/cliente')
+  obtenerClientes() {
+    return this.userService.obtenerClientes();
   }
 
   @Get('/informacion')

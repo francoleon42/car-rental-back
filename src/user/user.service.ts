@@ -9,6 +9,7 @@ import { CarService } from '../car/car.service';
 import { plainToInstance } from 'class-transformer';
 import { CarResponseDTO } from '../car/dto/car-response-dto';
 import { UsuarioResponseDto } from './dto/usuario-response-dto';
+import { Role } from '../common/enums/role.enum';
 
 @Injectable()
 export class UserService {
@@ -23,16 +24,25 @@ export class UserService {
     return 'This action adds a new user';
   }
 
-  findAll() {
-    return `This action returns all user`;
+  async obtenerClientes() {
+    const users = await this.userRepository.find({
+      where: { role: Role.CLIENT },
+    });
+
+    return users.map(user =>
+      plainToInstance(UsuarioResponseDto, user, {
+        excludeExtraneousValues: true,
+        enableImplicitConversion: true,
+      }),
+    );
   }
 
   async findOne(id: number) {
-    const user =  await this.userRepository.findOneBy({ id });
+    const user = await this.userRepository.findOneBy({ id });
     return plainToInstance(UsuarioResponseDto, user, {
       excludeExtraneousValues: true,
       enableImplicitConversion: true,
-    })
+    });
   }
 
   async actualizar(usuario: User, updateUserDto: UpdateUserDto) {

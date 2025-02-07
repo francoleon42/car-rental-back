@@ -1,6 +1,9 @@
 import { Expose, Transform, Type } from 'class-transformer';
 import { Role } from '../../common/enums/role.enum';
 export class UsuarioResponseDto {
+  @Expose()
+  @Transform(({ value }) => value ?? '')
+  id:number;
 
   @Expose()
   @Transform(({ value }) => value ?? '')

@@ -66,6 +66,30 @@ describe('AppController (e2e)', () => {
     );
   });
 
+  it('/cars/crear (POST) Debe crear un carro y devolver los datos correctamente', async () => {
+    const carData = {
+      brand: 'Toyota',
+      model: 'modelA',
+      color: 'Red',
+      passengers: 5,
+      ac: true,
+      pricePerDay: 50,
+    };
+
+    const response = await request(app.getHttpServer())
+      .post('/cars/crear')
+      .send(carData)
+      .expect(201);
+
+    expect(response.body).toMatchObject({
+      brand: carData.brand,
+      model: carData.model,
+      color: carData.color,
+      passengers: carData.passengers,
+      createdAt: expect.any(String),
+    });
+  });
+
   it('/cars (GET) debería obtener los cars', async () => {
     const response = await request(app.getHttpServer()).get('/cars').expect(200);
 
@@ -152,4 +176,8 @@ describe('AppController (e2e)', () => {
       })
     );
   });
+
+
+
+
 });

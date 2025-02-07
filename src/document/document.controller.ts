@@ -2,14 +2,28 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { DocumentService } from './document.service';
 import { CreateDocumentDto } from './dto/create-document.dto';
 import { UpdateDocumentDto } from './dto/update-document.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { User } from '../user/entities/user.entity';
+import { Repository } from 'typeorm';
 
 @Controller('document')
 export class DocumentController {
-  constructor(private readonly documentService: DocumentService) {}
+  constructor(private readonly documentService: DocumentService,
+              @InjectRepository(User)
+              private readonly userRepository: Repository<User>) {
+  }
 
-  @Post()
-  create(@Body() createDocumentDto: CreateDocumentDto) {
-    return this.documentService.create(createDocumentDto);
+
+  // EL usuario podra cargar documentos
+  @Post('/crear')
+  async create(@Body() createDocumentDto: CreateDocumentDto) {
+    //TODO : modificar con obtener el usuario logueado
+    const id = 1;
+    const user = await await this.userRepository.findOneBy({ id });
+    if (!user) {
+      throw new Error('Usuario no encontrado');
+    }
+    return this.documentService.create(user,createDocumentDto);
   }
 
   @Get()

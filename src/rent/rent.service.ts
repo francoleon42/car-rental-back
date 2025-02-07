@@ -28,6 +28,8 @@ export class RentService {
     rent.car = car;
     rent.pricePerDay = car.pricePerDay
 
+    await this.rentRepository.save(rent);
+
     return {
       id: rent.id,
       idCarARentar: rent.car.id,

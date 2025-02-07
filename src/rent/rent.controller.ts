@@ -16,15 +16,14 @@ export class RentController {
   }
 
   // usuario :
-  //TODO :  Usuario va a poder completar formulario basico para generar
-  // una solicitud renta
+  // Usuario va a poder completar formulario basico para generaruna solicitud renta
   @Post('/crear')
   async create(@Body() createRentDto: CreateRentDto) {
-    //modificar con obtener el usuario logueado
+    //TODO : modificar con obtener el usuario logueado
     const id = 1;
     const user = await await this.userRepository.findOneBy({ id });
     if (!user) {
-      throw new Error('User not found');
+      throw new Error('Usuario no encontrado');
     }
     return this.rentService.create(createRentDto, user);
   }

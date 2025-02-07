@@ -1,11 +1,30 @@
 import { Injectable } from '@nestjs/common';
 import { CreateDocumentDto } from './dto/create-document.dto';
 import { UpdateDocumentDto } from './dto/update-document.dto';
+import { User } from '../user/entities/user.entity';
+import { Document } from './entities/document.entity';
+import { Column, Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Rent } from '../rent/entities/rent.entity';
+import { CarService } from '../car/car.service';
 
 @Injectable()
 export class DocumentService {
-  create(createDocumentDto: CreateDocumentDto) {
-    return 'This action adds a new document';
+  constructor(
+    @InjectRepository(Document)
+    private readonly documentRepository: Repository<Document>,
+  ) {}
+  create(user:User,createDocumentDto: CreateDocumentDto) {
+    const document = new Document();
+    document.url = createDocumentDto.url;
+    document.src = createDocumentDto.src;
+    document.description = createDocumentDto.description;
+    document.title = createDocumentDto.title;
+    document.createdAt = new Date();
+    document.updatedAt = new Date();
+    document.user = user;
+
+    return this.documentRepository.save(document);
   }
 
   findAll() {

@@ -22,11 +22,11 @@ export class UserController {
 // usuario:
   @Patch('/actualizar')
   async actualizar(@Body() updateUserDto: UpdateUserDto) {
-    //modificar con obtener el usuario logueado
+    //TODO : modificar con obtener el usuario logueado
     const id = 1;
     const user =  await this.userRepository.findOneBy({ id });
     if (!user) {
-      throw new Error('User not found');
+      throw new Error('Usuario no encontrado');
     }
     return this.userService.actualizar(user, updateUserDto);
   }
@@ -38,10 +38,11 @@ export class UserController {
 
   @Get('/informacion')
   async findOne() {
+    //TODO : modificar con obtener el usuario logueado
     const id = 1;
     const user =  await this.userRepository.findOneBy({ id });
     if (!user) {
-      throw new Error('User not found');
+      throw new Error('Usuario no encontrado');
     }
     return this.userService.findOne(user.id);
   }

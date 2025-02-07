@@ -74,6 +74,27 @@ describe('AppController (e2e)', () => {
   });
 
 
+
+  it('/rent/crear (POST) debería crear un alquiler', async () => {
+    const rentData = {
+      idCarARentar: 1,
+      startingDate: '2025-02-10T09:00:00Z',
+      dueDate: '2025-02-15T09:00:00Z',
+    };
+
+    const response = await request(app.getHttpServer())
+      .post('/rent/crear')
+      .send(rentData)
+      .expect(201); // Verifica que devuelve 201 Created
+
+    expect(response.body).toEqual({
+      idCarARentar: 1,
+      startingDate: '2025-02-10T09:00:00Z',
+      dueDate: '2025-02-15T09:00:00Z',
+    });
+  });
+
+
 });
 
 

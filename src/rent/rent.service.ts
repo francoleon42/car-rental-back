@@ -28,7 +28,12 @@ export class RentService {
     rent.car = car;
     rent.pricePerDay = car.pricePerDay
 
-    return "Renta creada";
+    return {
+      id: rent.id,
+      idCarARentar: rent.car.id,
+      startingDate: rent.startingDate,
+      dueDate: rent.dueDate,
+    };
   }
 
   findAll() {

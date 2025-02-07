@@ -4,8 +4,11 @@ import { UpdateRentDto } from './dto/update-rent.dto';
 import { User } from '../user/entities/user.entity';
 import { Rent } from './entities/rent.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Column, CreateDateColumn, ManyToOne, Repository, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, IsNull, ManyToOne, MoreThan, Repository, UpdateDateColumn } from 'typeorm';
 import { CarService } from '../car/car.service';
+import { plainToInstance } from 'class-transformer';
+import { CarResponseDTO } from '../car/dto/car-response-dto';
+import { ResponseRentDto } from './dto/response-rent.dto';
 
 @Injectable()
 export class RentService {
@@ -13,7 +16,8 @@ export class RentService {
     @InjectRepository(Rent)
     private readonly rentRepository: Repository<Rent>,
     private readonly carService: CarService,
-  ) {}
+  ) {
+  }
 
   async create(createRentDto: CreateRentDto, user: User) {
     const car = await this.carService.obtenerCarPorID(createRentDto.idCarARentar);
@@ -26,7 +30,7 @@ export class RentService {
     rent.createdAt = new Date();
     rent.updatedAt = new Date();
     rent.car = car;
-    rent.pricePerDay = car.pricePerDay
+    rent.pricePerDay = car.pricePerDay;
 
     await this.rentRepository.save(rent);
 
@@ -38,8 +42,19 @@ export class RentService {
     };
   }
 
-  findAll() {
-    return `This action returns all rent`;
+  async obtenerRentSolicitadas() {
+    const rents: Rent[] = await this.rentRepository.find({
+      where: {
+        rejected: false,
+        admin: IsNull(),
+      },
+    });
+    return rents.map(rent =>
+      plainToInstance(ResponseRentDto, rent, {
+        excludeExtraneousValues: true,
+        enableImplicitConversion: true,
+      }),
+    );
   }
 
   findOne(id: number) {

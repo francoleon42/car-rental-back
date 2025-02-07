@@ -29,15 +29,20 @@ export class RentController {
   }
 
   // admin :
-  //TODO:ver todos las solicitodes de renta ( todas las rentas sin aceptar)
-  @Get()
+  //Como admin voy a querer listar todas las solicitudes de rent
+  // ( todas las rentas sin aceptar)
+  @Get('/solicitadas')
   findAll() {
-    return this.rentService.findAll();
+    return this.rentService.obtenerRentSolicitadas();
   }
 
 //TODO:  el admin va a poder aceptar o rechazar una renta
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateRentDto: UpdateRentDto) {
+  @Patch('/aceptar/:id')
+  rechazar(@Param('id') id: number, @Body() updateRentDto: UpdateRentDto) {
+    return this.rentService.update(+id, updateRentDto);
+  }
+  @Patch('/rechazar:id')
+  aceptar(@Param('id') id: number, @Body() updateRentDto: UpdateRentDto) {
     return this.rentService.update(+id, updateRentDto);
   }
 

@@ -114,17 +114,19 @@ export class DatabaseSeedService {
       pricePerDay: 50,
       startingDate: new Date('2024-03-01'),
       dueDate: new Date('2024-03-05'),
+      rejected:false,
       car: toyota,
-      user: client,
-      admin: admin,
+      user: client
     });
 
     const rent2 = this.rentRepository.create({
       pricePerDay: 45,
       startingDate: new Date('2024-03-10'),
       dueDate: new Date('2024-03-15'),
+      rejected:true,
       car: honda,
       user: client,
+      admin:admin
     });
 
     await this.rentRepository.save([rent1, rent2]);

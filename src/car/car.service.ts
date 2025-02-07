@@ -17,8 +17,6 @@ import { CarPicture } from '../common/enums/car-picture.enum';
 
 @Injectable()
 export class CarService {
-  // private pictureRepository: PictureRepository;
-
   constructor(
     @InjectRepository(Car)
     private readonly carRepository: CarRepository

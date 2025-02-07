@@ -6,8 +6,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Rent } from '../rent/entities/rent.entity';
 import { CarModule } from '../car/car.module';
 import { Picture } from './entities/picture.entity';
+import { User } from '../user/entities/user.entity';
+import { Car } from '../car/entities/car.entity';
 
 @Module({
+
+  imports: [TypeOrmModule.forFeature([Picture,Car]),CarModule],
   controllers: [PictureController],
   providers: [PictureService,PictureRepository],
   exports: [ PictureRepository]

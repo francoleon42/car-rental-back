@@ -7,9 +7,9 @@ import { UpdatePictureDto } from './dto/update-picture.dto';
 export class PictureController {
   constructor(private readonly pictureService: PictureService) {}
 
-  @Post()
-  create(@Body() createPictureDto: CreatePictureDto) {
-    return this.pictureService.create(createPictureDto);
+  @Post('/crear_por_car/:idCar')
+  create(@Param('idCar') idCar: number, @Body() createPictureDto: CreatePictureDto) {
+    return this.pictureService.create(idCar,createPictureDto);
   }
 
   @Get()

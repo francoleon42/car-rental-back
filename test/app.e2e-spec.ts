@@ -109,7 +109,7 @@ describe('AppController (e2e)', () => {
     );
   });
 
-  it('/rent/crear (POST) debería crear un alquiler', async () => {
+  it('/rent/crear (POST) Debe crear una renta y devolver los datos correctamente', async () => {
     const rentData = {
       idCarARentar: 1,
       startingDate: '2025-02-10T09:00:00Z',
@@ -121,6 +121,35 @@ describe('AppController (e2e)', () => {
       .send(rentData)
       .expect(201);
 
-    expect(response.body).toEqual(rentData);
+    expect(response.body).toMatchObject({
+      id: expect.any(Number),
+      idCarARentar: rentData.idCarARentar,
+      startingDate: rentData.startingDate,
+      dueDate: rentData.dueDate,
+    });
+  });
+
+  it('/document/crear (POST) debería crear un documento', async () => {
+    const documentData = {
+      url: 'https://example.com/document.pdf',
+      src: 'https://example.com/preview.jpg',
+      description: 'Este es un documento de prueba',
+      title: 'Documento de Ejemplo',
+    };
+
+    const response = await request(app.getHttpServer())
+      .post('/document/crear')
+      .send(documentData)
+      .expect(201);
+
+    expect(response.body).toEqual(
+      expect.objectContaining({
+        url: documentData.url,
+        src: documentData.src,
+        description: documentData.description,
+        title: documentData.title,
+        createdAt: expect.any(String),
+      })
+    );
   });
 });

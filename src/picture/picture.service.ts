@@ -67,12 +67,11 @@ export class PictureService {
     );
   }
 
-
-  update(id: number, updatePictureDto: UpdatePictureDto) {
-    return `This action updates a #${id} picture`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} picture`;
+  async remove(id: number) {
+    const picture = await this.pictureRepository.findOne({ where: { id: id } });
+    if (!picture) {
+      throw new NotFoundException(`Picture con ID ${id} no encontrado`);
+    }
+    return this.pictureRepository.remove(picture);
   }
 }

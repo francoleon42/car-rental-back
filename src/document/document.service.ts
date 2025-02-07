@@ -13,8 +13,10 @@ export class DocumentService {
   constructor(
     @InjectRepository(Document)
     private readonly documentRepository: Repository<Document>,
-  ) {}
-  create(user:User,createDocumentDto: CreateDocumentDto) {
+  ) {
+  }
+
+  async create(user: User, createDocumentDto: CreateDocumentDto) {
     const document = new Document();
     document.url = createDocumentDto.url;
     document.src = createDocumentDto.src;
@@ -24,7 +26,14 @@ export class DocumentService {
     document.updatedAt = new Date();
     document.user = user;
 
-    return this.documentRepository.save(document);
+    await this.documentRepository.save(document);
+    return {
+      url: document.url,
+      src: document.src,
+      description: document.description,
+      title: document.title,
+      createdAt: document.createdAt,
+    };
   }
 
   findAll() {

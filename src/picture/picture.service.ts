@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreatePictureDto } from './dto/create-picture.dto';
 import { UpdatePictureDto } from './dto/update-picture.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -7,6 +7,10 @@ import { CarRepository } from '../car/car.repository';
 import { Picture } from './entities/picture.entity';
 import { PictureRepository } from './picture.repository';
 import { CarPicture } from '../common/enums/car-picture.enum';
+import { plainToInstance } from 'class-transformer';
+import { CarDetalleResponseDTO } from '../car/dto/car-detalle-response-dto';
+import { PictureResponseDto } from './dto/picture-response-dto';
+import { CarResponseDTO } from '../car/dto/car-response-dto';
 
 @Injectable()
 export class PictureService {
@@ -47,9 +51,22 @@ export class PictureService {
     return `This action returns all picture`;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} picture`;
+  async findPicturesPorCar(id: number) {
+    const car = await this.carRepository.findOne({
+      where: { id: id },
+      relations: ['img'],
+    });
+    if (!car) {
+      throw new NotFoundException(`Car con ID ${id} no encontrado`);
+    }
+    return car.img.map(image =>
+      plainToInstance(PictureResponseDto, image, {
+        excludeExtraneousValues: true,
+        enableImplicitConversion: true,
+      }),
+    );
   }
+
 
   update(id: number, updatePictureDto: UpdatePictureDto) {
     return `This action updates a #${id} picture`;

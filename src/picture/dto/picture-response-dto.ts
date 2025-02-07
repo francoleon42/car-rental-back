@@ -7,6 +7,8 @@ import { Car } from '../../car/entities/car.entity';
 export class PictureResponseDto {
 
   @Expose()
+  id: string;
+  @Expose()
   src: string;
   @Expose()
   description: string;

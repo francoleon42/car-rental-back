@@ -7,24 +7,16 @@ import { UpdatePictureDto } from './dto/update-picture.dto';
 export class PictureController {
   constructor(private readonly pictureService: PictureService) {}
 
+  // crear imagenes de un car
   @Post('/crear_por_car/:idCar')
   create(@Param('idCar') idCar: number, @Body() createPictureDto: CreatePictureDto) {
     return this.pictureService.create(idCar,createPictureDto);
   }
 
-  @Get()
-  findAll() {
-    return this.pictureService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.pictureService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updatePictureDto: UpdatePictureDto) {
-    return this.pictureService.update(+id, updatePictureDto);
+  // obtener todas las fotos de vehiculo
+  @Get('/car/:idCar')
+  findOne(@Param('idCar') idCar: number) {
+    return this.pictureService.findPicturesPorCar(idCar);
   }
 
   @Delete(':id')

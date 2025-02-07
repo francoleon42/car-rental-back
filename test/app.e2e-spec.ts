@@ -47,7 +47,6 @@ describe('AppController (e2e)', () => {
   });
 
 
-
   it('/cars/detalle/:id (GET) obtener los detalles cars', async () => {
     const carId = 1;
     const response = await request(app.getHttpServer()).get(`/cars/detalle/${carId}`).expect(200);
@@ -74,7 +73,6 @@ describe('AppController (e2e)', () => {
   });
 
 
-
   it('/rent/crear (POST) debería crear un alquiler', async () => {
     const rentData = {
       idCarARentar: 1,
@@ -85,7 +83,7 @@ describe('AppController (e2e)', () => {
     const response = await request(app.getHttpServer())
       .post('/rent/crear')
       .send(rentData)
-      .expect(201); // Verifica que devuelve 201 Created
+      .expect(201);
 
     expect(response.body).toEqual({
       idCarARentar: 1,
@@ -94,6 +92,34 @@ describe('AppController (e2e)', () => {
     });
   });
 
+  it('/user/actualizar (PATCH) debería actualizar los datos del usuario', async () => {
+    const updateData = {
+      firstName: 'Juan',
+      lastName: 'Pérez',
+      dob: '1990-05-15',
+      address: 'Calle Falsa 123',
+      country: 'Argentina',
+    };
+
+    const response = await request(app.getHttpServer())
+      .patch('/user/actualizar')
+      .send(updateData)
+      .expect(200);
+
+    const updatedUser = response.body;
+
+    expect(updatedUser.firstName).toBe(updateData.firstName);
+    expect(updatedUser.lastName).toBe(updateData.lastName);
+    expect(updatedUser.dob).toBe(updateData.dob);
+    expect(updatedUser.address).toBe(updateData.address);
+    expect(updatedUser.country).toBe(updateData.country);
+
+    expect(updatedUser).toHaveProperty('id');
+    expect(updatedUser).toHaveProperty('email');
+    expect(updatedUser).toHaveProperty('role');
+    expect(updatedUser).toHaveProperty('createdAt');
+    expect(updatedUser).toHaveProperty('updatedAt');
+  });
 
 });
 

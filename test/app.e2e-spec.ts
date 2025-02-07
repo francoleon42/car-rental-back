@@ -21,14 +21,52 @@ describe('AppController (e2e)', () => {
     await app.close();
   });
 
-  it('/ (GET)', () => {
-    return request(app.getHttpServer())
-      .get('/')
-      .expect(200)
-      .expect('Hello World!');
+  it('/ (GET) debería retornar Hello World!', async () => {
+    const response = await request(app.getHttpServer()).get('/').expect(200);
+    expect(response.text).toBe('Hello World!');
   });
 
-  it('/cars (GET) obtener los cars', async () => {
+  it('/user/informacion (GET) debería retornar la información del usuario', async () => {
+    const response = await request(app.getHttpServer()).get('/user/informacion').expect(200);
+
+    expect(response.body).toEqual(
+      expect.objectContaining({
+        firstName: expect.any(String),
+        lastName: expect.any(String),
+        dob: expect.any(String),
+        address: expect.any(String),
+        country: expect.any(String),
+      }),
+    );
+  });
+
+  it('/user/actualizar (PATCH) debería actualizar los datos del usuario', async () => {
+    const updateData = {
+      firstName: 'Juan',
+      lastName: 'Pérez',
+      dob: '1990-05-15',
+      address: 'Calle Falsa 123',
+      country: 'Argentina',
+    };
+
+    const response = await request(app.getHttpServer())
+      .patch('/user/actualizar')
+      .send(updateData)
+      .expect(200);
+
+    expect(response.body).toMatchObject(updateData);
+    expect(response.body).toEqual(
+      expect.objectContaining({
+        id: expect.any(Number),
+        email: expect.any(String),
+        role: expect.any(String),
+        createdAt: expect.any(String),
+        updatedAt: expect.any(String),
+      }),
+    );
+  });
+
+  it('/cars (GET) debería obtener los cars', async () => {
     const response = await request(app.getHttpServer()).get('/cars').expect(200);
 
     expect(response.body).toEqual(
@@ -46,8 +84,7 @@ describe('AppController (e2e)', () => {
     );
   });
 
-
-  it('/cars/detalle/:id (GET) obtener los detalles cars', async () => {
+  it('/cars/detalle/:id (GET) debería obtener los detalles de un car', async () => {
     const carId = 1;
     const response = await request(app.getHttpServer()).get(`/cars/detalle/${carId}`).expect(200);
 
@@ -72,7 +109,6 @@ describe('AppController (e2e)', () => {
     );
   });
 
-
   it('/rent/crear (POST) debería crear un alquiler', async () => {
     const rentData = {
       idCarARentar: 1,
@@ -85,42 +121,6 @@ describe('AppController (e2e)', () => {
       .send(rentData)
       .expect(201);
 
-    expect(response.body).toEqual({
-      idCarARentar: 1,
-      startingDate: '2025-02-10T09:00:00Z',
-      dueDate: '2025-02-15T09:00:00Z',
-    });
+    expect(response.body).toEqual(rentData);
   });
-
-  it('/user/actualizar (PATCH) debería actualizar los datos del usuario', async () => {
-    const updateData = {
-      firstName: 'Juan',
-      lastName: 'Pérez',
-      dob: '1990-05-15',
-      address: 'Calle Falsa 123',
-      country: 'Argentina',
-    };
-
-    const response = await request(app.getHttpServer())
-      .patch('/user/actualizar')
-      .send(updateData)
-      .expect(200);
-
-    const updatedUser = response.body;
-
-    expect(updatedUser.firstName).toBe(updateData.firstName);
-    expect(updatedUser.lastName).toBe(updateData.lastName);
-    expect(updatedUser.dob).toBe(updateData.dob);
-    expect(updatedUser.address).toBe(updateData.address);
-    expect(updatedUser.country).toBe(updateData.country);
-
-    expect(updatedUser).toHaveProperty('id');
-    expect(updatedUser).toHaveProperty('email');
-    expect(updatedUser).toHaveProperty('role');
-    expect(updatedUser).toHaveProperty('createdAt');
-    expect(updatedUser).toHaveProperty('updatedAt');
-  });
-
 });
-
-

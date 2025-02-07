@@ -19,7 +19,7 @@ import { CarPicture } from '../common/enums/car-picture.enum';
 export class CarService {
   constructor(
     @InjectRepository(Car)
-    private readonly carRepository: CarRepository
+    private readonly carRepository: CarRepository,
   ) {
   }
 
@@ -82,8 +82,22 @@ export class CarService {
     return car;
   }
 
-  update(id: number, updateCarDto: UpdateCarDto) {
-    return `This action updates a #${id} car`;
+  async update(id: number, updateCarDto: UpdateCarDto) {
+    const car = await  this.obtenerCarPorID(id);
+    car.brand = updateCarDto.brand;
+    car.model = updateCarDto.model;
+    car.color = updateCarDto.color;
+    car.passengers = updateCarDto.passengers;
+    car.ac = updateCarDto.ac;
+    car.pricePerDay = updateCarDto.pricePerDay;
+    car.updatedAt = new Date();
+    await this.carRepository.save(car);
+    return {
+      brand : car.brand ,
+      model :car.model,
+      color : car.color,
+      updatedAt: car.updatedAt
+    };
   }
 
   remove(id: number) {

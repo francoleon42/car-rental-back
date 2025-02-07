@@ -2,6 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { CarService } from './car.service';
 import { CreateCarDto } from './dto/create-car.dto';
 import { UpdateCarDto } from './dto/update-car.dto';
+import { UpdateUserDto } from '../user/dto/update-user.dto';
 
 @Controller('/cars')
 export class CarController {
@@ -17,6 +18,11 @@ export class CarController {
     return this.carService.obtenerDetalle(+id);
   }
 
+  // como admin quiero poder editar los detalles de un auto.
+  @Patch('/actualizar/:id')
+  async actualizar(@Param('id') id: number,@Body() updateCarDto: UpdateCarDto) {
+    return this.carService.update(id,updateCarDto);
+  }
 
   //acceso: admin
   //  EL admin va a poder subir autos (con sus pictures)

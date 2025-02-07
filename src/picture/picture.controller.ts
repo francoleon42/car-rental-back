@@ -13,12 +13,11 @@ export class PictureController {
     return this.pictureService.create(idCar,createPictureDto);
   }
 
-  // obtener todas las fotos de vehiculo
+  // Como admin quiero gestionar las imágenes:
   @Get('/car/:idCar')
   findOne(@Param('idCar') idCar: number) {
     return this.pictureService.findPicturesPorCar(idCar);
   }
-
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.pictureService.remove(+id);

@@ -9,7 +9,7 @@ import {
   CreateDateColumn,
   IsNull,
   ManyToOne,
-  MoreThan,
+  MoreThan, MoreThanOrEqual,
   PrimaryGeneratedColumn,
   Repository,
   UpdateDateColumn,
@@ -19,6 +19,7 @@ import { plainToInstance } from 'class-transformer';
 import { CarResponseDTO } from '../car/dto/car-response-dto';
 import { ResponseRentDto } from './dto/response-rent.dto';
 import { Car } from '../car/entities/car.entity';
+import { CarDetalleResponseDTO } from '../car/dto/car-detalle-response-dto';
 
 @Injectable()
 export class RentService {
@@ -58,7 +59,9 @@ export class RentService {
       where: {
         rejected: false,
         admin: IsNull(),
+        dueDate: MoreThanOrEqual(new Date()),
       },
+      relations: ['car'],
     });
     return rents.map(rent =>
       plainToInstance(ResponseRentDto, rent, {
@@ -71,7 +74,7 @@ export class RentService {
   async obtenerSolicitudesDeUsuario(usuario: User) {
     const rents = await this.rentRepository.find({
       where: { user: usuario },
-      relations: ['car', 'admin'],
+      relations: ['car'],
     });
     return rents.map(rent =>
       plainToInstance(ResponseRentDto, rent, {
@@ -85,7 +88,7 @@ export class RentService {
   async aceptar(admin: User, id: number) {
     const rent = await this.rentRepository.findOne({
       where: { id },
-      relations: ['admin']
+      relations: ['admin'],
     });
 
     if (!rent) {
@@ -101,11 +104,11 @@ export class RentService {
 
     await this.rentRepository.save(rent);
     return {
-      mensaje: "Rent aprobada",
+      mensaje: 'Rent aprobada',
       idRenta: rent.id,
       rejected: rent.rejected,
-      acceptedDate :  rent.acceptedDate,
-      admin:   rent.admin.email,
+      acceptedDate: rent.acceptedDate,
+      admin: rent.admin.email,
       updatedAt: rent.updatedAt,
     };
   }
@@ -113,7 +116,7 @@ export class RentService {
   async rechazar(admin: User, id: number) {
     const rent = await this.rentRepository.findOne({
       where: { id },
-      relations: ['admin']
+      relations: ['admin'],
     });
     if (!rent) {
       throw new NotFoundException(`Rent con ID ${id} no encontrado`);
@@ -129,11 +132,11 @@ export class RentService {
     await this.rentRepository.save(rent);
 
     return {
-      mensaje: "Rent rechazada",
+      mensaje: 'Rent rechazada',
       idRenta: rent.id,
       rejected: rent.rejected,
-      acceptedDate :  rent.acceptedDate,
-      admin:   rent.admin.email,
+      acceptedDate: rent.acceptedDate,
+      admin: rent.admin.email,
       updatedAt: rent.updatedAt,
     };
   }

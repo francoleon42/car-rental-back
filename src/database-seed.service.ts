@@ -113,23 +113,32 @@ export class DatabaseSeedService {
     const rent1 = this.rentRepository.create({
       pricePerDay: 50,
       startingDate: new Date('2024-03-01'),
-      dueDate: new Date('2024-03-05'),
+      dueDate: new Date('2026-03-05'),
       rejected:false,
       car: toyota,
       user: client
     });
 
     const rent2 = this.rentRepository.create({
+      pricePerDay: 50,
+      startingDate: new Date('2024-04-01'),
+      dueDate: new Date('2026-03-05'),
+      rejected:false,
+      car: toyota,
+      user: client
+    });
+
+    const rent3 = this.rentRepository.create({
       pricePerDay: 45,
       startingDate: new Date('2024-03-10'),
-      dueDate: new Date('2024-03-15'),
+      dueDate: new Date('2026-03-15'),
       rejected:true,
       car: honda,
       user: client,
       admin:admin
     });
 
-    await this.rentRepository.save([rent1, rent2]);
+    await this.rentRepository.save([rent1, rent2,rent3]);
 
     // CREAR DOCUMENTOS
     const license = this.documentRepository.create({

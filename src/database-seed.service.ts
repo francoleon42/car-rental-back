@@ -83,18 +83,24 @@ export class DatabaseSeedService {
     const toyotaPictures = this.pictureRepository.create([
       {
         src: 'toyota-front.jpg',
+        title: 'Toyota',
         description: 'Vista frontal',
         carPicture: CarPicture.FRONT,
+        date: new Date(),
         car: toyota,
-        createdAt: new Date()
+        createdAt: new Date(),
+        updatedAt: new Date()
       },
       {
         src: 'toyota-side.jpg',
+        title: 'Toyota',
         description: 'Vista lateral',
         carPicture: CarPicture.SIDE,
+        date: new Date(),
         car: toyota,
-        createdAt: new Date()
-      },
+        createdAt: new Date(),
+        updatedAt: new Date()
+      }
     ]);
 
     const hondaPictures = this.pictureRepository.create([

@@ -21,10 +21,7 @@ describe('AppController (e2e)', () => {
     await app.close();
   });
 
-  it('/ (GET) debería retornar Hello World!', async () => {
-    const response = await request(app.getHttpServer()).get('/').expect(200);
-    expect(response.text).toBe('Hello World!');
-  });
+  //==========USER=======
 
   it('/user/informacion (GET) debería retornar la información del usuario', async () => {
     const response = await request(app.getHttpServer()).get('/user/informacion').expect(200);
@@ -65,7 +62,27 @@ describe('AppController (e2e)', () => {
       }),
     );
   });
+  it(' /user/cliente (GET)- debería retornar la lista de clientes', async () => {
+    const response = await request(app.getHttpServer())
+      .get('/user/cliente')
+      .expect(200);
 
+    expect(response.body).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          id: expect.any(Number),
+          firstName: expect.any(String),
+          lastName: expect.any(String),
+          dob: expect.any(String),
+          address: expect.any(String),
+          country: expect.any(String),
+        }),
+      ])
+    );
+  });
+
+
+  // ==========CAR ==========
   it('/cars/crear (POST) Debe crear un carro y devolver los datos correctamente', async () => {
     const carData = {
       brand: 'Toyota',
@@ -133,6 +150,92 @@ describe('AppController (e2e)', () => {
     );
   });
 
+  it('/cars/actualizar/:id (PATCH) debería actualizar los datos de un carro', async () => {
+    const carId = 1;
+    const updateData = {
+      brand: 'Editado',
+      model: 'Editado',
+      color: 'Editado',
+      passengers: 5,
+      ac: true,
+      pricePerDay: 0,
+    };
+
+    const response = await request(app.getHttpServer())
+      .patch(`/cars/actualizar/${carId}`)
+      .send(updateData)
+      .expect(200);
+
+    expect(response.body).toMatchObject({
+      brand: updateData.brand,
+      model: updateData.model,
+      color: updateData.color,
+      updatedAt: expect.any(String),
+    });
+  });
+//========== PICTURE ================
+  it('/picture/crear_por_car/:id (POST) debería crear una imagen para un carro', async () => {
+    const carId = 1;
+    const pictureData = {
+      src: 'https://example.com/car-image.jpg',
+      description: 'Vista frontal del coche',
+      title: 'Toyota Corolla 2023 - Frontal',
+      carPicture: 'front',
+    };
+
+    const response = await request(app.getHttpServer())
+      .post(`/picture/crear_por_car/${carId}`)
+      .send(pictureData)
+      .expect(201);
+
+    expect(response.body).toEqual(
+      expect.objectContaining({
+        src: pictureData.src,
+        description: pictureData.description,
+        title: pictureData.title,
+        createdAt: expect.any(String),
+      })
+    );
+  });
+  it('/picture/car/:id (GET) debería obtener todas las imágenes de un carro', async () => {
+    const carId = 1;
+
+    const response = await request(app.getHttpServer())
+      .get(`/picture/car/${carId}`)
+      .expect(200);
+
+    expect(response.body).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          id: expect.any(String),
+          src: expect.any(String),
+          description: expect.any(String),
+          title: expect.any(String), // Puede ser null
+          carPicture: expect.any(String),
+        }),
+      ])
+    );
+  });
+  it('/picture/:id (DELETE) debería eliminar una imagen y devolver sus datos', async () => {
+    const pictureId = 1;
+
+    const response = await request(app.getHttpServer())
+      .delete(`/picture/${pictureId}`)
+      .expect(200);
+
+    expect(response.body).toEqual(
+      expect.objectContaining({
+        src: expect.any(String),
+        description: expect.any(String),
+        title: expect.any(String),
+        carPicture: expect.any(String),
+        date: expect.any(String),
+        createdAt: expect.any(String),
+        updatedAt: expect.any(String),
+      })
+    );
+  });
+  //======== RENTA  =================
   it('/rent/crear (POST) Debe crear una renta y devolver los datos correctamente', async () => {
     const rentData = {
       idCarARentar: 1,
@@ -152,7 +255,99 @@ describe('AppController (e2e)', () => {
       dueDate: rentData.dueDate,
     });
   });
+  it('/rent/solicitadas (GET)- debería devolver la lista de rentas solicitadas', async () => {
+    const response = await request(app.getHttpServer())
+      .get('/rent/solicitadas')
+      .expect(200);
 
+    expect(response.body).toEqual(
+      expect.arrayContaining([
+        {
+          id: expect.any(Number),
+          pricePerDay: expect.any(Number),
+          acceptedDate: null,
+          rejected: expect.any(Boolean),
+          startingDate: expect.any(String),
+          dueDate: expect.any(String),
+          endDate: null,
+          createdAt: expect.any(String),
+          updatedAt: expect.any(String),
+        },
+      ])
+    );
+  });
+  it(' /rent/mis_solicitudes (GET)- debería devolver la lista de solicitudes de renta del usuario', async () => {
+    const response = await request(app.getHttpServer())
+      .get('/rent/mis_solicitudes')
+      .expect(200);
+
+    expect(response.body).toEqual(
+      expect.arrayContaining([
+        {
+          id: expect.any(Number),
+          pricePerDay: expect.any(Number),
+          acceptedDate: null,
+          rejected: expect.any(Boolean),
+          startingDate: expect.any(String),
+          dueDate: expect.any(String),
+          endDate: null,
+          createdAt: expect.any(String),
+          updatedAt: expect.any(String),
+        },
+      ])
+    );
+  });
+  it(' /rent/cliente/1 (GET) - debería devolver la lista de solicitudes de renta del cliente con ID por paramatro', async () => {
+    const response = await request(app.getHttpServer())
+      .get('/rent/cliente/1')
+      .expect(200);
+
+    expect(response.body).toEqual(
+      expect.arrayContaining([
+        {
+          id: expect.any(Number),
+          pricePerDay: expect.any(Number),
+          acceptedDate: null,
+          rejected: expect.any(Boolean),
+          startingDate: expect.any(String),
+          dueDate: expect.any(String),
+          endDate: null,
+          createdAt: expect.any(String),
+          updatedAt: expect.any(String),
+        },
+      ])
+    );
+  });
+  it(' /rent/aceptar/:idRent (PATCH)- debería aprobar la renta ', async () => {
+    const response = await request(app.getHttpServer())
+      .patch('/rent/aceptar/1')
+      .expect(200);
+
+    expect(response.body).toEqual({
+      mensaje: 'Rent aprobada',
+      idRenta: 1,
+      rejected: false,
+      acceptedDate: expect.any(String),
+      admin: 'admin@rentalcars.com',
+      updatedAt: expect.any(String),
+    });
+  });
+  it(' /rent/rechazar/:idRent  (PATCH)- debería rechazar la renta ', async () => {
+    const response = await request(app.getHttpServer())
+      .patch('/rent/rechazar/2')
+      .expect(200);
+
+    expect(response.body).toEqual({
+      mensaje: 'Rent rechazada',
+      idRenta: 2,
+      rejected: true,
+      acceptedDate: null,
+      admin: 'admin@rentalcars.com',
+      updatedAt: expect.any(String),
+    });
+  });
+
+  // ========DOCUMENTO
   it('/document/crear (POST) debería crear un documento', async () => {
     const documentData = {
       url: 'https://example.com/document.pdf',

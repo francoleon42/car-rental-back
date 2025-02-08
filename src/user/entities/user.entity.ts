@@ -52,6 +52,13 @@ export class User {
 
   @OneToMany(() => Rent, (rent) => rent.admin)
   approvedRents: Rent[];
-  
+
+
+  // para forgot-password
+  @Column({ nullable: true })
+  resetPasswordToken: string;
+
+  @Column({ nullable: true })
+  resetPasswordExpires: Date;
 
 }

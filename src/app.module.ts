@@ -15,6 +15,8 @@ import { CarModule } from './car/car.module';
 import { PictureModule } from './picture/picture.module';
 import { RentModule } from './rent/rent.module';
 import { DocumentModule } from './document/document.module';
+import { AuthModule } from './auth/auth.module';
+
 
 
 import * as dotenv from 'dotenv';
@@ -22,6 +24,7 @@ dotenv.config();
 
 @Module({
   imports: [
+    AuthModule,
     UserModule,
     DocumentModule,
     RentModule,

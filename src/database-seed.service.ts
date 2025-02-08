@@ -7,6 +7,7 @@ import { RentRepository } from './rent/rent.repository';
 import { DocumentRepository } from './document/document.repository';
 import { Role } from './common/enums/role.enum';
 import { CarPicture } from './common/enums/car-picture.enum';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class DatabaseSeedService {
@@ -28,6 +29,8 @@ export class DatabaseSeedService {
 
 
     // CREAR USUARIOS
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash('1234', saltRounds);
     const client = this.userRepository.create({
       // firstName: 'John',
       // lastName: 'Doe',
@@ -36,7 +39,7 @@ export class DatabaseSeedService {
       // address: '456 Client Avenue',
       // country: 'Canada',
       email: 'john.doe@example.com',
-      password:"1234",
+      password:hashedPassword,
       role: Role.CLIENT,
       createdAt: new Date(),
       updatedAt: new Date()
@@ -49,7 +52,7 @@ export class DatabaseSeedService {
       // address: '123 Admin Street',
       // country: 'USA',
       email: 'admin@rentalcars.com',
-      password:"1234",
+      password:hashedPassword,
       role: Role.ADMIN,
       createdAt: new Date(),
       updatedAt: new Date()

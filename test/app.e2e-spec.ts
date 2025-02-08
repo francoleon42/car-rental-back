@@ -83,6 +83,7 @@ describe('AppController (e2e)', () => {
 
 
   // ==========CAR ==========
+
   it('/cars/crear (POST) Debe crear un carro y devolver los datos correctamente', async () => {
     const carData = {
       brand: 'Toyota',
@@ -106,7 +107,6 @@ describe('AppController (e2e)', () => {
       createdAt: expect.any(String),
     });
   });
-
   it('/cars (GET) debería obtener los cars', async () => {
     const response = await request(app.getHttpServer()).get('/cars').expect(200);
 
@@ -124,7 +124,6 @@ describe('AppController (e2e)', () => {
       ]),
     );
   });
-
   it('/cars/detalle/:id (GET) debería obtener los detalles de un car', async () => {
     const carId = 1;
     const response = await request(app.getHttpServer()).get(`/cars/detalle/${carId}`).expect(200);
@@ -149,7 +148,6 @@ describe('AppController (e2e)', () => {
       }),
     );
   });
-
   it('/cars/actualizar/:id (PATCH) debería actualizar los datos de un carro', async () => {
     const carId = 1;
     const updateData = {
@@ -173,7 +171,10 @@ describe('AppController (e2e)', () => {
       updatedAt: expect.any(String),
     });
   });
+
+
 //========== PICTURE ================
+
   it('/picture/crear_por_car/:id (POST) debería crear una imagen para un carro', async () => {
     const carId = 1;
     const pictureData = {
@@ -235,7 +236,9 @@ describe('AppController (e2e)', () => {
       })
     );
   });
+
   //======== RENTA  =================
+
   it('/rent/crear (POST) Debe crear una renta y devolver los datos correctamente', async () => {
     const rentData = {
       idCarARentar: 1,

@@ -24,11 +24,4 @@ export class AuthController {
   async forgotPassword(@Body('email') email: string) {
     return this.authService.forgotPassword(email);
   }
-
-  @Post('logout')
-  @UseGuards(AuthGuard('jwt'))
-  logout() {
-    // Implementar lógica de logout
-    return { message: 'Sesión cerrada exitosamente' };
-  }
 }

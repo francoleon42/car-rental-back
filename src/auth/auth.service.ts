@@ -64,4 +64,5 @@ export class AuthService {
     await this.userRepository.save(user);
     // Implementar envío de email aquí
   }
+
 }

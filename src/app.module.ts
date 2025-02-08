@@ -20,10 +20,15 @@ import { AuthModule } from './auth/auth.module';
 
 
 import * as dotenv from 'dotenv';
+import { ConfigModule } from '@nestjs/config';
 dotenv.config();
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: '.env'
+    }),
     AuthModule,
     UserModule,
     DocumentModule,

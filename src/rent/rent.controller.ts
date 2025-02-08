@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Request, Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, ForbiddenException } from '@nestjs/common';
 import { RentService } from './rent.service';
 import { CreateRentDto } from './dto/create-rent.dto';
 import { UpdateRentDto } from './dto/update-rent.dto';
@@ -7,6 +7,9 @@ import { UserRepository } from '../user/user.repository';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Role } from '../common/enums/role.enum';
+import { AuthGuard } from '@nestjs/passport';
+import { UserDecorator } from '../common/decorators/user.decorator';
+import {JwtStrategy} from '../auth/strategies/jwt.strategy'
 
 @Controller('rent')
 export class RentController {
@@ -19,12 +22,13 @@ export class RentController {
   // usuario :
   // Usuario va a poder completar formulario basico para generaruna solicitud renta
   @Post('/crear')
-  async create(@Body() createRentDto: CreateRentDto) {
-    //TODO : modificar con obtener el usuario logueado
-    const id = 1;
-    const user =  await this.userRepository.findOneBy({ id: id });
+  @UseGuards(AuthGuard('jwt')) 
+  async create(@Body() createRentDto: CreateRentDto, @UserDecorator() user: User) {
     if (!user) {
       throw new Error('Usuario no encontrado');
+    }
+    if (user.role != Role.CLIENT) {
+      throw new Error('El usuario no es cliente');
     }
     return this.rentService.create(createRentDto, user);
   }
@@ -83,4 +87,8 @@ export class RentController {
     return this.rentService.obtenerRentasDeCliente(id);
   }
 
+
+  private getLoggedUser(req): User {
+    return req.user;
+  }
 }

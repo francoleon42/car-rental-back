@@ -19,10 +19,10 @@ export class RentController {
   ) {
   }
 
-  // usuario :
-  // Usuario va a poder completar formulario basico para generaruna solicitud renta
+  // cliente :
+  // cliente va a poder completar formulario basico para generaruna solicitud renta
   @Post('/crear')
-  @UseGuards(AuthGuard('jwt')) 
+  @UseGuards(AuthGuard('jwt'))
   async create(@Body() createRentDto: CreateRentDto, @UserDecorator() user: User) {
     if (!user) {
       throw new Error('Usuario no encontrado');
@@ -33,17 +33,19 @@ export class RentController {
     return this.rentService.create(createRentDto, user);
   }
 
-// Quiero ver el historial de mis solicitudes de alquiler (ver todas mis solicitudes rentas)
+// Como cliente Quiero ver el historial de mis solicitudes de alquiler (ver todas mis solicitudes rentas)
   @Get('/mis_solicitudes')
-  async  obtenerSolicitudesDeUsuario() {
-    //TODO : modificar con obtener el usuario logueado
-    const id = 1;
-    const user =  await this.userRepository.findOneBy({ id: id });
+  @UseGuards(AuthGuard('jwt'))
+  async  obtenerSolicitudesDeUsuario(@UserDecorator() user: User) {
     if (!user) {
       throw new Error('Usuario no encontrado');
     }
+    if (user.role != Role.CLIENT) {
+      throw new Error('El usuario no es cliente');
+    }
     return this.rentService.obtenerSolicitudesDeUsuario(user);
   }
+
   // admin :
   //Como admin voy a querer listar todas las solicitudes de rent
   // ( todas las rentas sin aceptar)
@@ -54,30 +56,25 @@ export class RentController {
 
 // El admin va a poder aceptar o rechazar una renta
   @Patch('/aceptar/:id')
-  async rechazar(@Param('id') id: number) {
-    //TODO : modificar con obtener el admin logueado que va aceptar la rent y validar que sea admin
-    const idAdmin = 2;
-    const userAdmin =  await this.userRepository.findOneBy({ id: idAdmin });
+  @UseGuards(AuthGuard('jwt'))
+  async rechazar(@Param('id') id: number, @UserDecorator() userAdmin: User) {
     if (!userAdmin) {
-      throw new Error('Usuario Admin no encontrado');
+      throw new Error('Usuario no encontrado');
     }
-    if (userAdmin.role !== Role.ADMIN) {
-      throw new Error('El usuario no tiene rol de administrador');
+    if (userAdmin.role != Role.ADMIN) {
+      throw new Error('El usuario no es cliente');
     }
     return this.rentService.aceptar(userAdmin,+id);
   }
 
   @Patch('/rechazar/:id')
-  async aceptar(@Param('id') id: number) {
-
-    //TODO : modificar con obtener el admin logueado que va aceptar la rent y validar que sea admin
-    const idAdmin = 2;
-    const userAdmin =  await this.userRepository.findOneBy({ id: idAdmin });
+  @UseGuards(AuthGuard('jwt'))
+  async aceptar(@Param('id') id: number,  @UserDecorator() userAdmin: User) {
     if (!userAdmin) {
-      throw new Error('Usuario Admin no encontrado');
+      throw new Error('Usuario no encontrado');
     }
-    if (userAdmin.role !== Role.ADMIN) {
-      throw new Error('El usuario no tiene rol de administrador');
+    if (userAdmin.role != Role.ADMIN) {
+      throw new Error('El usuario no es cliente');
     }
     return this.rentService.rechazar(userAdmin,id);
   }

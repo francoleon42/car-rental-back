@@ -2,12 +2,21 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { AppModule } from './../src/app.module';
+import { AuthService } from '../src/auth/auth.service';
+import { UserService } from '../src/user/user.service';
+import { Role } from '../src/common/enums/role.enum';
+import * as bcrypt from 'bcrypt';
+import { UserRepository } from '../src/user/user.repository';
+import { HttpService } from '@nestjs/axios';  // Importar HttpService
+
 
 jest.setTimeout(60000);
 
 describe('AppController (e2e)', () => {
   let app: INestApplication;
-
+  let httpService: HttpService;  // Instancia de HttpService
+  let authTokenClient: string;
+  let authTokenAdmin: string;
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
@@ -15,6 +24,32 @@ describe('AppController (e2e)', () => {
 
     app = moduleFixture.createNestApplication();
     await app.init();
+
+    try {
+      //CLIENTE
+      const rentDataCliente = {
+        email: 'john.doe@example.com',
+        password: '1234',
+      };
+      const responseCliente = await request(app.getHttpServer())
+        .post('/auth/login')
+        .send(rentDataCliente);
+      authTokenClient = responseCliente.body.access_token;
+
+      ///ADMIN
+      const rentDataAdmin = {
+        email: 'admin@rentalcars.com',
+        password: '1234',
+      };
+      const responseAdmin = await request(app.getHttpServer())
+        .post('/auth/login')
+        .send(rentDataAdmin);
+      authTokenAdmin = responseAdmin.body.access_token;
+
+    } catch (error) {
+      console.error('Error during login:', error);
+      throw error;
+    }
   });
 
   afterAll(async () => {
@@ -77,7 +112,7 @@ describe('AppController (e2e)', () => {
           address: expect.any(String),
           country: expect.any(String),
         }),
-      ])
+      ]),
     );
   });
 
@@ -195,7 +230,7 @@ describe('AppController (e2e)', () => {
         description: pictureData.description,
         title: pictureData.title,
         createdAt: expect.any(String),
-      })
+      }),
     );
   });
   it('/picture/car/:id (GET) debería obtener todas las imágenes de un carro', async () => {
@@ -214,7 +249,7 @@ describe('AppController (e2e)', () => {
           title: expect.any(String), // Puede ser null
           carPicture: expect.any(String),
         }),
-      ])
+      ]),
     );
   });
   it('/picture/:id (DELETE) debería eliminar una imagen y devolver sus datos', async () => {
@@ -233,7 +268,7 @@ describe('AppController (e2e)', () => {
         date: expect.any(String),
         createdAt: expect.any(String),
         updatedAt: expect.any(String),
-      })
+      }),
     );
   });
 
@@ -249,6 +284,7 @@ describe('AppController (e2e)', () => {
     const response = await request(app.getHttpServer())
       .post('/rent/crear')
       .send(rentData)
+      .set('Authorization', `Bearer ${authTokenClient}`)
       .expect(201);
 
     expect(response.body).toMatchObject({
@@ -276,12 +312,13 @@ describe('AppController (e2e)', () => {
           createdAt: expect.any(String),
           updatedAt: expect.any(String),
         },
-      ])
+      ]),
     );
   });
   it(' /rent/mis_solicitudes (GET)- debería devolver la lista de solicitudes de renta del usuario', async () => {
     const response = await request(app.getHttpServer())
       .get('/rent/mis_solicitudes')
+      .set('Authorization', `Bearer ${authTokenClient}`)
       .expect(200);
 
     expect(response.body).toEqual(
@@ -297,7 +334,7 @@ describe('AppController (e2e)', () => {
           createdAt: expect.any(String),
           updatedAt: expect.any(String),
         },
-      ])
+      ]),
     );
   });
   it(' /rent/cliente/1 (GET) - debería devolver la lista de solicitudes de renta del cliente con ID por paramatro', async () => {
@@ -318,12 +355,13 @@ describe('AppController (e2e)', () => {
           createdAt: expect.any(String),
           updatedAt: expect.any(String),
         },
-      ])
+      ]),
     );
   });
   it(' /rent/aceptar/:idRent (PATCH)- debería aprobar la renta ', async () => {
     const response = await request(app.getHttpServer())
       .patch('/rent/aceptar/1')
+      .set('Authorization', `Bearer ${authTokenAdmin}`)
       .expect(200);
 
     expect(response.body).toEqual({
@@ -338,6 +376,7 @@ describe('AppController (e2e)', () => {
   it(' /rent/rechazar/:idRent  (PATCH)- debería rechazar la renta ', async () => {
     const response = await request(app.getHttpServer())
       .patch('/rent/rechazar/2')
+      .set('Authorization', `Bearer ${authTokenAdmin}`)
       .expect(200);
 
     expect(response.body).toEqual({
@@ -371,11 +410,9 @@ describe('AppController (e2e)', () => {
         description: documentData.description,
         title: documentData.title,
         createdAt: expect.any(String),
-      })
+      }),
     );
   });
-
-
 
 
 });

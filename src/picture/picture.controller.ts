@@ -23,7 +23,7 @@ export class PictureController {
   @Roles('admin')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   findOne(@Param('idCar') idCar: number) {
-    return this.pictureService.findPicturesPorCar(idCar);
+    return this.pictureService.obtenerPicturesPorCar(idCar);
   }
   @Delete(':id')
   @Roles('admin')

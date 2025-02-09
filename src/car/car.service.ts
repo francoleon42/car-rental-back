@@ -18,7 +18,7 @@ import { CarPicture } from '../common/enums/car-picture.enum';
 @Injectable()
 export class CarService {
   constructor(
-    @InjectRepository(Car)
+    @InjectRepository(CarRepository)
     private readonly carRepository: CarRepository,
   ) {
   }
@@ -55,16 +55,10 @@ export class CarService {
   }
 
   async obtenerDetalle(id: number): Promise<CarDetalleResponseDTO> {
-    const car = await this.carRepository.findOne({
-      where: { id },
-      relations: ['img'],
-      loadEagerRelations: false,
-    });
-
+    const car = await this.carRepository.findCarByIdWithImages(id);
     if (!car) {
       throw new NotFoundException(`Car with ID ${id} not found`);
     }
-
     return plainToInstance(CarDetalleResponseDTO, {
       carResponseDTO: car,
       picturesResponseDTO: car.img,
@@ -72,18 +66,12 @@ export class CarService {
 
   }
 
-  async obtenerCarPorID(id: number) {
-    const car = await this.carRepository.findOne(
-      { where: { id: id } },
-    );
-    if (!car) {
-      throw new Error('Car not found');
-    }
-    return car;
-  }
 
   async update(id: number, updateCarDto: UpdateCarDto) {
-    const car = await  this.obtenerCarPorID(id);
+    const car = await this.carRepository.findCarById(id);
+    if (!car) {
+      throw new NotFoundException(`Car with ID ${id} no encontrado`);
+    }
     car.brand = updateCarDto.brand;
     car.model = updateCarDto.model;
     car.color = updateCarDto.color;

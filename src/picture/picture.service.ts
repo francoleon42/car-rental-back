@@ -15,15 +15,15 @@ import { CarResponseDTO } from '../car/dto/car-response-dto';
 @Injectable()
 export class PictureService {
   constructor(
-    @InjectRepository(Picture)
+    @InjectRepository(PictureRepository)
     private readonly pictureRepository: PictureRepository,
-    @InjectRepository(Car)
+    @InjectRepository(CarRepository)
     private readonly carRepository: CarRepository,
   ) {
   }
 
   async create(idCar: number, createPictureDto: CreatePictureDto) {
-    const car = await this.carRepository.findOneBy({ id: idCar });
+    const car = await this.carRepository.findCarById(idCar);
     if (!car) {
       throw new Error('car no encontrado');
     }
@@ -47,19 +47,12 @@ export class PictureService {
     };
   }
 
-  findAll() {
-    return `This action returns all picture`;
-  }
-
-  async findPicturesPorCar(id: number) {
-    const car = await this.carRepository.findOne({
-      where: { id: id },
-      relations: ['img'],
-    });
-    if (!car) {
-      throw new NotFoundException(`Car con ID ${id} no encontrado`);
+  async obtenerPicturesPorCar(id: number) {
+    const pictures = await this.pictureRepository.findPicturesByCar(id);
+    if (!pictures || pictures.length === 0) {
+      throw new NotFoundException(`No se encontraron imágenes para el coche con ID ${id}`);
     }
-    return car.img.map(image =>
+    return pictures.map(image =>
       plainToInstance(PictureResponseDto, image, {
         excludeExtraneousValues: true,
         enableImplicitConversion: true,
@@ -68,10 +61,6 @@ export class PictureService {
   }
 
   async remove(id: number) {
-    const picture = await this.pictureRepository.findOne({ where: { id: id } });
-    if (!picture) {
-      throw new NotFoundException(`Picture con ID ${id} no encontrado`);
-    }
-    return this.pictureRepository.remove(picture);
+    return this.pictureRepository.removePictureById(id);
   }
 }

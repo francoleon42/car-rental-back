@@ -21,19 +21,23 @@ import { ResponseRentDto } from './dto/response-rent.dto';
 import { Car } from '../car/entities/car.entity';
 import { CarDetalleResponseDTO } from '../car/dto/car-detalle-response-dto';
 import { RentRepository } from './rent.repository';
+import { CarRepository } from '../car/car.repository';
 
 @Injectable()
 export class RentService {
   constructor(
     @InjectRepository(RentRepository)
     private readonly rentRepository: RentRepository,
-    private readonly carService: CarService,
+    @InjectRepository(CarRepository)
+    private readonly carRepository: CarRepository,
   ) {
   }
 
   async create(createRentDto: CreateRentDto, user: User) {
-    const car = await this.carService.obtenerCarPorID(createRentDto.idCarARentar);
-
+    const car = await this.carRepository.findCarById(createRentDto.idCarARentar);
+    if (!car) {
+      throw new NotFoundException(`Car con Id ${createRentDto.idCarARentar} no encontrado`);
+    }
     const rent = new Rent();
     rent.startingDate = createRentDto.startingDate;
     rent.dueDate = createRentDto.dueDate;
@@ -53,7 +57,7 @@ export class RentService {
       dueDate: rent.dueDate,
     };
   }
-  
+
   async obtenerRentSolicitadas() {
     const rents: Rent[] = await this.rentRepository.obtenerRentSolicitadas();
     return rents.map(rent =>

@@ -10,6 +10,8 @@ import { Role } from '../common/enums/role.enum';
 import { AuthGuard } from '@nestjs/passport';
 import { UserDecorator } from '../common/decorators/user.decorator';
 import {JwtStrategy} from '../auth/strategies/jwt.strategy'
+import { Roles } from '../common/decorators/roles.decorator';
+import { RolesGuard } from '../common/decorators/roles.guard';
 
 @Controller('rent')
 export class RentController {
@@ -19,10 +21,10 @@ export class RentController {
   ) {
   }
 
-  // cliente :
-  // cliente va a poder completar formulario basico para generaruna solicitud renta
+  // CLIENTE :
   @Post('/crear')
-  @UseGuards(AuthGuard('jwt'))
+  @Roles('client')
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
   async create(@Body() createRentDto: CreateRentDto, @UserDecorator() user: User) {
     if (!user) {
       throw new Error('Usuario no encontrado');
@@ -33,9 +35,9 @@ export class RentController {
     return this.rentService.create(createRentDto, user);
   }
 
-// Como cliente Quiero ver el historial de mis solicitudes de alquiler (ver todas mis solicitudes rentas)
   @Get('/mis_solicitudes')
-  @UseGuards(AuthGuard('jwt'))
+  @Roles('client')
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
   async  obtenerSolicitudesDeUsuario(@UserDecorator() user: User) {
     if (!user) {
       throw new Error('Usuario no encontrado');
@@ -46,46 +48,39 @@ export class RentController {
     return this.rentService.obtenerSolicitudesDeUsuario(user);
   }
 
-  // admin :
-  //Como admin voy a querer listar todas las solicitudes de rent
-  // ( todas las rentas sin aceptar)
+  // ADMIN :
   @Get('/solicitadas')
+  @Roles('admin')
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
   obtenerRentSolicitadas() {
     return this.rentService.obtenerRentSolicitadas();
   }
 
-// El admin va a poder aceptar o rechazar una renta
   @Patch('/aceptar/:id')
-  @UseGuards(AuthGuard('jwt'))
+  @Roles('admin')
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
   async rechazar(@Param('id') id: number, @UserDecorator() userAdmin: User) {
     if (!userAdmin) {
       throw new Error('Usuario no encontrado');
-    }
-    if (userAdmin.role != Role.ADMIN) {
-      throw new Error('El usuario no es cliente');
     }
     return this.rentService.aceptar(userAdmin,+id);
   }
 
   @Patch('/rechazar/:id')
-  @UseGuards(AuthGuard('jwt'))
+  @Roles('admin')
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
   async aceptar(@Param('id') id: number,  @UserDecorator() userAdmin: User) {
     if (!userAdmin) {
       throw new Error('Usuario no encontrado');
-    }
-    if (userAdmin.role != Role.ADMIN) {
-      throw new Error('El usuario no es cliente');
     }
     return this.rentService.rechazar(userAdmin,id);
   }
 
   @Get('cliente/:idCliente')
+  @Roles('admin')
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
   async obtenerRentasDeCliente(@Param('idCliente') id: number){
     return this.rentService.obtenerRentasDeCliente(id);
   }
 
-
-  private getLoggedUser(req): User {
-    return req.user;
-  }
 }

@@ -19,18 +19,10 @@ export class UserController {
   ) {}
 
 
-// usuario cliente y admin :
-  @Patch('/actualizar')
-  @UseGuards(AuthGuard('jwt'))
-  async actualizar(@Body() updateUserDto: UpdateUserDto, @UserDecorator() user: User) {
-    if (!user) {
-      throw new Error('Usuario no encontrado');
-    }
-    return this.userService.actualizar(user, updateUserDto);
-  }
-
+// USUARIO:
   @Get('/informacion')
-  @UseGuards(AuthGuard('jwt'))
+  @Roles('client', 'admin')
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
   async findOne(@UserDecorator() user: User) {
     if (!user) {
       throw new Error('Usuario no encontrado');
@@ -38,7 +30,17 @@ export class UserController {
     return this.userService.findOne(user.id);
   }
 
-  //solo admin :
+  @Patch('/actualizar')
+  @Roles('client', 'admin')
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  async actualizar(@Body() updateUserDto: UpdateUserDto, @UserDecorator() user: User) {
+    if (!user) {
+      throw new Error('Usuario no encontrado');
+    }
+    return this.userService.actualizar(user, updateUserDto);
+  }
+
+  //ADMIN :
   @Get('/cliente')
   @Roles('admin')
   @UseGuards(AuthGuard('jwt'), RolesGuard)

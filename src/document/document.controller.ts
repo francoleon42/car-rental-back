@@ -7,6 +7,8 @@ import { User } from '../user/entities/user.entity';
 import { Repository } from 'typeorm';
 import { AuthGuard } from '@nestjs/passport';
 import { UserDecorator } from '../common/decorators/user.decorator';
+import { Roles } from '../common/decorators/roles.decorator';
+import { RolesGuard } from '../common/decorators/roles.guard';
 
 @Controller('document')
 export class DocumentController {
@@ -16,9 +18,10 @@ export class DocumentController {
   }
 
 
-  // EL usuario(admin y cliente) podra cargar documentos
+  // USUARIO(admin y cliente)
   @Post('/crear')
-  @UseGuards(AuthGuard('jwt'))
+  @Roles('client', 'admin')
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
   async create(@Body() createDocumentDto: CreateDocumentDto, @UserDecorator() user: User) {
     if (!user) {
       throw new Error('Usuario no encontrado');

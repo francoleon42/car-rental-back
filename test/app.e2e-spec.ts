@@ -405,6 +405,7 @@ describe('AppController (e2e)', () => {
 
     const response = await request(app.getHttpServer())
       .post('/document/crear')
+      .set('Authorization', `Bearer ${authTokenClient}`)
       .send(documentData)
       .expect(201);
 

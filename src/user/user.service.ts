@@ -19,7 +19,7 @@ export class UserService {
     private readonly userRepository: Repository<User>,
   ) {
   }
-  
+
   async obtenerClientes() {
     const users = await this.userRepository.find({
       where: { role: Role.CLIENT },

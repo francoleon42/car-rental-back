@@ -7,6 +7,7 @@ import { UpdatePictureDto } from './dto/update-picture.dto';
 export class PictureController {
   constructor(private readonly pictureService: PictureService) {}
 
+  // solo admin :
   // crear imagenes de un car
   @Post('/crear_por_car/:idCar')
   create(@Param('idCar') idCar: number, @Body() createPictureDto: CreatePictureDto) {

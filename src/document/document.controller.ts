@@ -1,10 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { DocumentService } from './document.service';
 import { CreateDocumentDto } from './dto/create-document.dto';
 import { UpdateDocumentDto } from './dto/update-document.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../user/entities/user.entity';
 import { Repository } from 'typeorm';
+import { AuthGuard } from '@nestjs/passport';
+import { UserDecorator } from '../common/decorators/user.decorator';
 
 @Controller('document')
 export class DocumentController {
@@ -14,12 +16,10 @@ export class DocumentController {
   }
 
 
-  // EL usuario podra cargar documentos
+  // EL usuario(admin y cliente) podra cargar documentos
   @Post('/crear')
-  async create(@Body() createDocumentDto: CreateDocumentDto) {
-    //TODO : modificar con obtener el usuario logueado
-    const id = 1;
-    const user = await await this.userRepository.findOneBy({ id });
+  @UseGuards(AuthGuard('jwt'))
+  async create(@Body() createDocumentDto: CreateDocumentDto, @UserDecorator() user: User) {
     if (!user) {
       throw new Error('Usuario no encontrado');
     }

@@ -26,7 +26,8 @@ export class AuthService {
     const user = this.userRepository.create({
       ...signUpDto,
       password: hashedPassword,
-      role: Role.CLIENT,
+      role: signUpDto.role,
+      createdAt : new Date()
     });
 
     return this.userRepository.save(user);

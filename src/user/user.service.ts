@@ -19,11 +19,7 @@ export class UserService {
     private readonly userRepository: Repository<User>,
   ) {
   }
-
-  create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
-  }
-
+  
   async obtenerClientes() {
     const users = await this.userRepository.find({
       where: { role: Role.CLIENT },
@@ -53,7 +49,16 @@ export class UserService {
     usuario.country = updateUserDto.country;
     usuario.updatedAt = new Date();
 
-    return this.userRepository.save(usuario);
+    await this.userRepository.save(usuario);
+    return {
+      id:usuario.id,
+      firstName:usuario.firstName,
+      lastName: usuario.lastName,
+      dob:usuario.dob,
+      address: usuario.address,
+      country:usuario.country,
+      updatedAt:usuario.updatedAt
+    }
   }
 
   remove(id: number) {

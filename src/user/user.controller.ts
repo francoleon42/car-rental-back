@@ -1,10 +1,13 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
+import { Role } from '../common/enums/role.enum';
+import { UserDecorator } from '../common/decorators/user.decorator';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('user')
 export class UserController {
@@ -13,38 +16,30 @@ export class UserController {
               private readonly userRepository: Repository<User>,
   ) {}
 
-  //AUTH:
-  @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.userService.create(createUserDto);
-  }
 
-// usuario:
+// usuario cliente y admin :
   @Patch('/actualizar')
-  async actualizar(@Body() updateUserDto: UpdateUserDto) {
-    //TODO : modificar con obtener el usuario logueado
-    const id = 1;
-    const user =  await this.userRepository.findOneBy({ id });
+  @UseGuards(AuthGuard('jwt'))
+  async actualizar(@Body() updateUserDto: UpdateUserDto, @UserDecorator() user: User) {
     if (!user) {
       throw new Error('Usuario no encontrado');
     }
     return this.userService.actualizar(user, updateUserDto);
   }
 
-  //admin :
-  @Get('/cliente')
-  obtenerClientes() {
-    return this.userService.obtenerClientes();
-  }
-
   @Get('/informacion')
-  async findOne() {
-    //TODO : modificar con obtener el usuario logueado
-    const id = 1;
-    const user =  await this.userRepository.findOneBy({ id });
+  @UseGuards(AuthGuard('jwt'))
+  async findOne(@UserDecorator() user: User) {
     if (!user) {
       throw new Error('Usuario no encontrado');
     }
     return this.userService.findOne(user.id);
   }
+
+  //solo admin :
+  @Get('/cliente')
+  obtenerClientes() {
+    return this.userService.obtenerClientes();
+  }
+
 }

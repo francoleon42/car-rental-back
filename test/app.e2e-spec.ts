@@ -59,7 +59,10 @@ describe('AppController (e2e)', () => {
   //==========USER=======
 
   it('/user/informacion (GET) debería retornar la información del usuario', async () => {
-    const response = await request(app.getHttpServer()).get('/user/informacion').expect(200);
+    const response = await request(app.getHttpServer())
+      .get('/user/informacion')
+      .set('Authorization', `Bearer ${authTokenClient}`)
+      .expect(200);
 
     expect(response.body).toEqual(
       expect.objectContaining({
@@ -71,7 +74,6 @@ describe('AppController (e2e)', () => {
       }),
     );
   });
-
   it('/user/actualizar (PATCH) debería actualizar los datos del usuario', async () => {
     const updateData = {
       firstName: 'Juan',
@@ -83,6 +85,7 @@ describe('AppController (e2e)', () => {
 
     const response = await request(app.getHttpServer())
       .patch('/user/actualizar')
+      .set('Authorization', `Bearer ${authTokenClient}`)
       .send(updateData)
       .expect(200);
 
@@ -90,9 +93,11 @@ describe('AppController (e2e)', () => {
     expect(response.body).toEqual(
       expect.objectContaining({
         id: expect.any(Number),
-        email: expect.any(String),
-        role: expect.any(String),
-        createdAt: expect.any(String),
+        firstName:expect.any(String),
+        lastName:expect.any(String),
+        dob:expect.any(String),
+        address:expect.any(String),
+        country:expect.any(String),
         updatedAt: expect.any(String),
       }),
     );

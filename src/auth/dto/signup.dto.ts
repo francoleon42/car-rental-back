@@ -8,4 +8,5 @@ export class SignUpDto {
   @IsString()
   password: string;
 
+  role: Role;
 }

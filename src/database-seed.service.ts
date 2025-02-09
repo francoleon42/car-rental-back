@@ -144,6 +144,7 @@ export class DatabaseSeedService {
       rejected:true,
       car: honda,
       user: client,
+      acceptedDate : new  Date(),
       admin:admin
     });
 

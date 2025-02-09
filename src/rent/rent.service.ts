@@ -20,12 +20,13 @@ import { CarResponseDTO } from '../car/dto/car-response-dto';
 import { ResponseRentDto } from './dto/response-rent.dto';
 import { Car } from '../car/entities/car.entity';
 import { CarDetalleResponseDTO } from '../car/dto/car-detalle-response-dto';
+import { RentRepository } from './rent.repository';
 
 @Injectable()
 export class RentService {
   constructor(
-    @InjectRepository(Rent)
-    private readonly rentRepository: Repository<Rent>,
+    @InjectRepository(RentRepository)
+    private readonly rentRepository: RentRepository,
     private readonly carService: CarService,
   ) {
   }
@@ -52,17 +53,9 @@ export class RentService {
       dueDate: rent.dueDate,
     };
   }
-
-
+  
   async obtenerRentSolicitadas() {
-    const rents: Rent[] = await this.rentRepository.find({
-      where: {
-        rejected: false,
-        admin: IsNull(),
-        dueDate: MoreThanOrEqual(new Date()),
-      },
-      relations: ['car'],
-    });
+    const rents: Rent[] = await this.rentRepository.obtenerRentSolicitadas();
     return rents.map(rent =>
       plainToInstance(ResponseRentDto, rent, {
         excludeExtraneousValues: true,
@@ -72,9 +65,10 @@ export class RentService {
   }
 
   async obtenerSolicitudesDeUsuario(usuario: User) {
-    const rents = await this.rentRepository.find({
-      where: { user: usuario }
-    });
+    const rents: Rent[] = await this.rentRepository.obtenerRentSolicitadas();
+    if (!rents.length) {
+      throw new NotFoundException('No se encontraron rentas solicitadas.');
+    }
     return rents.map(rent =>
       plainToInstance(ResponseRentDto, rent, {
         excludeExtraneousValues: true,
@@ -83,13 +77,8 @@ export class RentService {
     );
   }
 
-
   async aceptar(admin: User, id: number) {
-    const rent = await this.rentRepository.findOne({
-      where: { id },
-      relations: ['admin'],
-    });
-
+    const rent = await this.rentRepository.obtenerRentaPorID(id);
     if (!rent) {
       throw new NotFoundException(`Rent con ID ${id} no encontrado`);
     }
@@ -113,10 +102,7 @@ export class RentService {
   }
 
   async rechazar(admin: User, id: number) {
-    const rent = await this.rentRepository.findOne({
-      where: { id },
-      relations: ['admin'],
-    });
+    const rent = await this.rentRepository.obtenerRentaPorID(id);
     if (!rent) {
       throw new NotFoundException(`Rent con ID ${id} no encontrado`);
     }
@@ -140,13 +126,8 @@ export class RentService {
     };
   }
 
-
-  async obtenerRentasDeCliente(id: number) {
-    const rents = await this.rentRepository
-      .createQueryBuilder('rent')
-      .innerJoinAndSelect('rent.user', 'user')
-      .where('user.id = :id', { id })
-      .getMany();
+  async obtenerRentasDeCliente(idUser: number) {
+    const rents = await this.rentRepository.findRentasByUserId(idUser);
 
     return rents.map(rent =>
       plainToInstance(ResponseRentDto, rent, {
@@ -156,8 +137,6 @@ export class RentService {
     );
   }
 
-  update(id: number, updateRentDto: UpdateRentDto) {
-    return `This action updates a #${id} rent`;
-  }
+
 
 }

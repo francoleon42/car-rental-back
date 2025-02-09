@@ -10,21 +10,19 @@ import { plainToInstance } from 'class-transformer';
 import { CarResponseDTO } from '../car/dto/car-response-dto';
 import { UsuarioResponseDto } from './dto/usuario-response-dto';
 import { Role } from '../common/enums/role.enum';
+import { UserRepository } from './user.repository';
 
 @Injectable()
 export class UserService {
 
   constructor(
-    @InjectRepository(User)
-    private readonly userRepository: Repository<User>,
+    @InjectRepository(UserRepository)
+    private readonly userRepository: UserRepository,
   ) {
   }
 
   async obtenerClientes() {
-    const users = await this.userRepository.find({
-      where: { role: Role.CLIENT },
-    });
-
+    const users = await this.userRepository.obtenerClientes();
     return users.map(user =>
       plainToInstance(UsuarioResponseDto, user, {
         excludeExtraneousValues: true,
@@ -59,9 +57,5 @@ export class UserService {
       country:usuario.country,
       updatedAt:usuario.updatedAt
     }
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} user`;
   }
 }

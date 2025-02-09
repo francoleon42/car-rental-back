@@ -105,6 +105,7 @@ describe('AppController (e2e)', () => {
   it(' /user/cliente (GET)- debería retornar la lista de clientes', async () => {
     const response = await request(app.getHttpServer())
       .get('/user/cliente')
+      .set('Authorization', `Bearer ${authTokenAdmin}`)
       .expect(200);
 
     expect(response.body).toEqual(
@@ -137,6 +138,7 @@ describe('AppController (e2e)', () => {
     const response = await request(app.getHttpServer())
       .post('/cars/crear')
       .send(carData)
+      .set('Authorization', `Bearer ${authTokenAdmin}`)
       .expect(201);
 
     expect(response.body).toMatchObject({
@@ -148,7 +150,10 @@ describe('AppController (e2e)', () => {
     });
   });
   it('/cars (GET) debería obtener los cars', async () => {
-    const response = await request(app.getHttpServer()).get('/cars').expect(200);
+    const response = await request(app.getHttpServer())
+      .get('/cars')
+      .set('Authorization', `Bearer ${authTokenClient}`)
+      .expect(200);
 
     expect(response.body).toEqual(
       expect.arrayContaining([
@@ -166,7 +171,10 @@ describe('AppController (e2e)', () => {
   });
   it('/cars/detalle/:id (GET) debería obtener los detalles de un car', async () => {
     const carId = 1;
-    const response = await request(app.getHttpServer()).get(`/cars/detalle/${carId}`).expect(200);
+    const response = await request(app.getHttpServer())
+      .get(`/cars/detalle/${carId}`)
+      .set('Authorization', `Bearer ${authTokenClient}`)
+      .expect(200);
 
     expect(response.body).toEqual(
       expect.objectContaining({
@@ -201,6 +209,7 @@ describe('AppController (e2e)', () => {
 
     const response = await request(app.getHttpServer())
       .patch(`/cars/actualizar/${carId}`)
+      .set('Authorization', `Bearer ${authTokenAdmin}`)
       .send(updateData)
       .expect(200);
 
@@ -226,6 +235,7 @@ describe('AppController (e2e)', () => {
 
     const response = await request(app.getHttpServer())
       .post(`/picture/crear_por_car/${carId}`)
+      .set('Authorization', `Bearer ${authTokenAdmin}`)
       .send(pictureData)
       .expect(201);
 
@@ -243,6 +253,7 @@ describe('AppController (e2e)', () => {
 
     const response = await request(app.getHttpServer())
       .get(`/picture/car/${carId}`)
+      .set('Authorization', `Bearer ${authTokenAdmin}`)
       .expect(200);
 
     expect(response.body).toEqual(
@@ -262,6 +273,7 @@ describe('AppController (e2e)', () => {
 
     const response = await request(app.getHttpServer())
       .delete(`/picture/${pictureId}`)
+      .set('Authorization', `Bearer ${authTokenAdmin}`)
       .expect(200);
 
     expect(response.body).toEqual(
@@ -302,6 +314,7 @@ describe('AppController (e2e)', () => {
   it('/rent/solicitadas (GET)- debería devolver la lista de rentas solicitadas', async () => {
     const response = await request(app.getHttpServer())
       .get('/rent/solicitadas')
+      .set('Authorization', `Bearer ${authTokenAdmin}`)
       .expect(200);
 
     expect(response.body).toEqual(
@@ -345,6 +358,7 @@ describe('AppController (e2e)', () => {
   it(' /rent/cliente/1 (GET) - debería devolver la lista de solicitudes de renta del cliente con ID por paramatro', async () => {
     const response = await request(app.getHttpServer())
       .get('/rent/cliente/1')
+      .set('Authorization', `Bearer ${authTokenAdmin}`)
       .expect(200);
 
     expect(response.body).toEqual(

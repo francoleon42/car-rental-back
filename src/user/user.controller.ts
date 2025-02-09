@@ -8,6 +8,8 @@ import { Repository } from 'typeorm';
 import { Role } from '../common/enums/role.enum';
 import { UserDecorator } from '../common/decorators/user.decorator';
 import { AuthGuard } from '@nestjs/passport';
+import { RolesGuard } from '../common/decorators/roles.guard';
+import { Roles } from '../common/decorators/roles.decorator';
 
 @Controller('user')
 export class UserController {
@@ -38,6 +40,8 @@ export class UserController {
 
   //solo admin :
   @Get('/cliente')
+  @Roles('admin')
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
   obtenerClientes() {
     return this.userService.obtenerClientes();
   }

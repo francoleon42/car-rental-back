@@ -36,19 +36,5 @@ export class DocumentService {
     };
   }
 
-  findAll() {
-    return `This action returns all document`;
-  }
 
-  findOne(id: number) {
-    return `This action returns a #${id} document`;
-  }
-
-  update(id: number, updateDocumentDto: UpdateDocumentDto) {
-    return `This action updates a #${id} document`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} document`;
-  }
 }

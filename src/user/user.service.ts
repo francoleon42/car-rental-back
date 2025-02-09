@@ -31,7 +31,7 @@ export class UserService {
     );
   }
 
-  async findOne(id: number) {
+  async obtenerUsuario(id: number) {
     const user = await this.userRepository.findOneBy({ id });
     return plainToInstance(UsuarioResponseDto, user, {
       excludeExtraneousValues: true,

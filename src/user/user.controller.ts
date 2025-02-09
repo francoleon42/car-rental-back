@@ -27,7 +27,7 @@ export class UserController {
     if (!user) {
       throw new Error('Usuario no encontrado');
     }
-    return this.userService.findOne(user.id);
+    return this.userService.obtenerUsuario(user.id);
   }
 
   @Patch('/actualizar')

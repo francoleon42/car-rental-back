@@ -66,7 +66,6 @@ export class CarService {
 
   }
 
-
   async update(id: number, updateCarDto: UpdateCarDto) {
     const car = await this.carRepository.findCarById(id);
     if (!car) {
@@ -88,7 +87,5 @@ export class CarService {
     };
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} car`;
-  }
+
 }

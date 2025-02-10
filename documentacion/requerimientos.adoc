@@ -1,0 +1,45 @@
+= Car Rental 
+== Requerimientos : 
+
+=== 1-Usuario : 
+- Como usuario, quiero poder subir mis documentos a la aplicación para que los administradores puedan verificar mi identidad.  {POST {{baseUrl}}/document/crear}
+- Como  Usuario, antes del pago, quiero que la aplicación realice una verificación de conversión para confirmar si tengo fondos suficientes en mi saldo.  (*FALTA*)
+
+-Como Usuario, quiero poder registrarme, recuperar mi contraseña y cerrar sesión en mi cuenta.  
+		Sign Up → POST {{baseUrl}}/auth/signup
+		Login → POST {{baseUrl}}/auth/login
+		Forgot password → (*FALTA*)
+		Logout  → (DESDE EL FRONT)
+
+=== 2- Cliente: Como cliente, quiero una cuenta de usuario para poder solicitar alquileres.  
+-Como cliente , quiero ver un catálogo de los autos disponibles para poder elegir uno para alquilar. { GET{{baseUrl}}/cars }
+-Como cliente, quiero ver los detalles de un auto en particular para poder alquilarlo.  {GET {{baseUrl}}/cars/detalle/:id}
+-Como cliente, quiero poder solicitar el alquiler de un auto por un período de tiempo.  {POST {baseUrl}}/rent/crear}
+-Como cliente, quiero ver el historial de mis solicitudes de alquiler.  {GET {{baseUrl}}/rent/mis_solicitudes }
+-Como cliente e, quiero actualizar mis datos de usuario para modificar mi descripción, nombre, edad, etc. {GET {{baseUrl}}/user/informacion y PATCH {{baseUrl}}/user/actualizar}
+
+-Como cliente, al recibir pagos en criptomonedas, quiero que siempre se me pague en USDC.    (*FALTA*)
+
+
+=== 3- Administrador :
+- Como administrador, quiero agregar nuevos autos, establecer su precio y cargar imágenes para incluirlos en la galería de autos. {POST {{baseUrl}}/cars/crear Y {POST {baseUrl}}/picture/crear_por_car/:idCar} }
+- Como administrador, quiero ver todos los autos. {GET{baseUrl}}/cars}
+- Como administrador, quiero poder subir imágenes de los autos para proporcionar información visual sobre ellos.  {POST {baseUrl}}/picture/crear_por_car/:idCar} 
+- Como administrador, quiero poder editar los detalles de un auto. {PATCH {baseUrl}}/cars/actualizar/:idCar} 
+- Como administrador, quiero gestionar las imágenes relacionadas con un auto. {GET {{baseUrl}}/picture/car/:idCar} y {DELETE {baseUrl}}/picture/:idPicture} (Podra verlas y borrarlas )
+- Como administrador, quiero ver una lista de alquileres solicitados para poder ordenarlos por prioridad.  {GET {baseUrl}}/rent/solicitadas} (todas aquellas rentas sin aceptar y rechazar o vencidas)  
+- Como administrador, quiero poder aprobar o rechazar un alquiler según los documentos proporcionados. {PATCH {baseUrl}}/rent/aceptar/:idRenta} Y  {PATCH {baseUrl}}/rent/rechazadas/:idRenta}
+
+- Como administrador, quiero ver el historial de solicitudes de los usuarios para poder hacer una evaluación precisa del usuario.
+{GET{baseUrl}/user/cliente} y despues acceder a {GET{{baseUrl}}/rent/cliente/:idCliente} 
+
+===== Desarrollador: 
+- Como desarrollador, necesito configurar el módulo de usuarios para los clientes.  
+- Como desarrollador, necesito configurar el módulo de autos para clientes y administradores.  
+- Como desarrollador, necesito configurar el módulo de alquileres para clientes y administradores.  
+- Como desarrollador, necesito configurar el módulo de imágenes para los autos. 
+ 
+- Como desarrollador, necesito configurar los roles de usuario (administrador y usuario) para proporcionar dos interfaces separadas.
+- Como desarrollador, quiero que los usuarios no administradores sean redirigidos de las páginas de administración para poder trabajar de manera segura en mi aplicación.  
+- Como desarrollador, quiero conectar mi billetera a la aplicación utilizando el Stellar SDK. 
+- Como desarrollador, quiero configurar un bucket S3 para que los usuarios puedan subir archivos a mi aplicación. 

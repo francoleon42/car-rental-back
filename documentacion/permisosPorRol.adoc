@@ -1,0 +1,28 @@
+===== ADMIN ====:
+GET {{baseUrl}}/user/cliente
+GET {{baseUrl}}/rent/cliente/:idClient
+GET {{baseUrl}}/rent/solicitadas
+PATCH {{baseUrl}}/rent/aceptar/:idRent
+PATCH {{baseUrl}}/rent/rechazar/:idRent
+
+POST {{baseUrl}}/cars/crear
+PATCH {{baseUrl}}/cars/actualizar/:idCar
+POST {{baseUrl}}/picture/crear_por_car/:idCar
+GET {{baseUrl}}/picture/car/:idCar
+DELETE {baseUrl}}/picture/:idPicture
+
+==== CLIENTE ====:
+POST {{baseUrl}}/rent/crear
+GET {{baseUrl}}/rent/mis_solicitudes
+GET {{baseUrl}}/cars/detalle/:idCar
+
+==== USUARIO (CLIENTE Y ADMIN) ====: 
+POST {baseUrl}}/auth/login
+POST {{baseUrl}}/auth/signup
+
+GET {{baseUrl}}/user/informacion
+PATCH {{baseUrl}}/user/actualizar
+POST{{baseUrl}}/document/crear
+GET {{baseUrl}}/cars
+
+

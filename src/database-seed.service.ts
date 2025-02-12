@@ -32,12 +32,12 @@ export class DatabaseSeedService {
     const saltRounds = 10;
     const hashedPassword = await bcrypt.hash('1234', saltRounds);
     const client = this.userRepository.create({
-      // firstName: 'John',
-      // lastName: 'Doe',
-      // dob: new Date('1995-05-20'),
-      // email: 'john.doe@example.com',
-      // address: '456 Client Avenue',
-      // country: 'Canada',
+       firstName: 'John',
+      lastName: 'Doe',
+      dob: new Date('1995-05-20'),
+      address: '456 Client Avenue',
+      country: 'Canada',
+
       email: 'john.doe@example.com',
       password:hashedPassword,
       role: Role.CLIENT,

@@ -69,7 +69,7 @@ export class RentService {
   }
 
   async obtenerSolicitudesDeUsuario(usuario: User) {
-    const rents: Rent[] = await this.rentRepository.obtenerRentSolicitadas();
+    const rents: Rent[] = await this.rentRepository.findRentasByUserId(usuario.id);
     if (!rents.length) {
       throw new NotFoundException('No se encontraron rentas solicitadas.');
     }

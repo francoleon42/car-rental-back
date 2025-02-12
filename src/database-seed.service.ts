@@ -141,7 +141,7 @@ export class DatabaseSeedService {
       pricePerDay: 45,
       startingDate: new Date('2024-03-10'),
       dueDate: new Date('2026-03-15'),
-      rejected:true,
+      rejected:false,
       car: honda,
       user: client,
       acceptedDate : new  Date(),

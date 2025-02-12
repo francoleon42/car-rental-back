@@ -19,6 +19,13 @@ export class CarController {
   obtenerTodos() {
     return this.carService.findAll();
   }
+
+  @Get('/:id')
+  @Roles('client', 'admin')
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  obtenerCar(@Param('id') id: number) {
+    return this.carService.obtenerCar(id);
+  }
 //CLIENTE
   @Get('/detalle/:id')
   @Roles('client')

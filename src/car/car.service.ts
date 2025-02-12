@@ -4,7 +4,7 @@ import { UpdateCarDto } from './dto/update-car.dto';
 import { CarRepository } from './car.repository';
 
 import { CarResponseDTO } from './dto/car-response-dto';
-import { plainToInstance } from 'class-transformer';
+import { Expose, plainToInstance } from 'class-transformer';
 import { PictureRepository } from '../picture/picture.repository';
 import { CarDetalleResponseDTO } from './dto/car-detalle-response-dto';
 import { Car } from './entities/car.entity';
@@ -52,6 +52,11 @@ export class CarService {
         enableImplicitConversion: true,
       }),
     );
+  }
+
+  async obtenerCar(id:number){
+    const car = await this.carRepository.findOne({ where: { id } });
+    return plainToInstance(CarResponseDTO, car);
   }
 
   async obtenerDetalle(id: number): Promise<CarDetalleResponseDTO> {

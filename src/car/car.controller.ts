@@ -21,7 +21,7 @@ export class CarController {
   }
 
   @Get('/:id')
-  @Roles('client', 'admin')
+  @Roles( 'admin')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   obtenerCar(@Param('id') id: number) {
     return this.carService.obtenerCar(id);

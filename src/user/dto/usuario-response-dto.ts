@@ -24,4 +24,9 @@ export class UsuarioResponseDto {
   @Expose()
   @Transform(({ value }) => value ?? '')
   country: string;
+
+  @Expose()
+  @Transform(({ value }) => value ?? '')
+  role: string;
+
 }

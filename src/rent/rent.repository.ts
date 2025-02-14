@@ -9,7 +9,7 @@ export class RentRepository extends Repository<Rent> {
     super(Rent, dataSource.createEntityManager());
   }
 
-  async obtenerRentSolicitadas(): Promise<Rent[]> {
+  async findPendingRent(): Promise<Rent[]> {
     return this.find({
       where: {
         rejected: false,
@@ -20,21 +20,14 @@ export class RentRepository extends Repository<Rent> {
     });
   }
 
-  async obtenerSolicitudesDeUsuario(usuario: User): Promise<Rent[]> {
-    return this.find({
-      where: { user: usuario },
-      relations: ['car'],
-    });
-  }
-
-  async obtenerRentaPorID(id: number) {
+  async findRentById(id: number) {
     return  this.findOne({
       where: { id },
       relations: ['admin'],
     });
   }
 
-  async findRentasByUserId(userId: number) {
+  async findRentByUserId(userId: number) {
     return this.createQueryBuilder('rent')
       .innerJoinAndSelect('rent.user', 'user')
       .where('user.id = :id', { id: userId })

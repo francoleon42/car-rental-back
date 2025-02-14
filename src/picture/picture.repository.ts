@@ -19,7 +19,7 @@ export class PictureRepository extends Repository<Picture> {
   async removePictureById(id: number) {
     const picture = await this.findOne({ where: { id } });
     if (!picture) {
-      throw new NotFoundException(`Picture con ID ${id} no encontrado`);
+      throw new NotFoundException(`Picture with ID ${id} not found`);
     }
     return this.remove(picture);
   }

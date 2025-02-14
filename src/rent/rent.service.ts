@@ -19,7 +19,7 @@ import { plainToInstance } from 'class-transformer';
 import { CarResponseDTO } from '../car/dto/car-response-dto';
 import { ResponseRentDto } from './dto/response-rent.dto';
 import { Car } from '../car/entities/car.entity';
-import { CarDetalleResponseDTO } from '../car/dto/car-detalle-response-dto';
+import { CarDetailResponseDto } from '../car/dto/car-detail-response-dto';
 import { RentRepository } from './rent.repository';
 import { CarRepository } from '../car/car.repository';
 
@@ -58,8 +58,8 @@ export class RentService {
     };
   }
 
-  async obtenerRentSolicitadas() {
-    const rents: Rent[] = await this.rentRepository.obtenerRentSolicitadas();
+  async pendingRequests() {
+    const rents: Rent[] = await this.rentRepository.findPendingRent();
     return rents.map(rent =>
       plainToInstance(ResponseRentDto, rent, {
         excludeExtraneousValues: true,
@@ -68,10 +68,10 @@ export class RentService {
     );
   }
 
-  async obtenerSolicitudesDeUsuario(usuario: User) {
-    const rents: Rent[] = await this.rentRepository.findRentasByUserId(usuario.id);
+  async getMyRequests(usuario: User) {
+    const rents: Rent[] = await this.rentRepository.findRentByUserId(usuario.id);
     if (!rents.length) {
-      throw new NotFoundException('No se encontraron rentas solicitadas.');
+      throw new NotFoundException('No requested rentals found.');
     }
     return rents.map(rent =>
       plainToInstance(ResponseRentDto, rent, {
@@ -81,13 +81,13 @@ export class RentService {
     );
   }
 
-  async aceptar(admin: User, id: number) {
-    const rent = await this.rentRepository.obtenerRentaPorID(id);
+  async accept(admin: User, id: number) {
+    const rent = await this.rentRepository.findRentById(id);
     if (!rent) {
-      throw new NotFoundException(`Rent con ID ${id} no encontrado`);
+      throw new NotFoundException(`Rent with ID ${id} not found`);
     }
     if (rent.admin) {
-      throw new BadRequestException(`Rent ${id} ya está aprobado o rechazado`);
+      throw new BadRequestException(`Rent ${id} is already approved or rejected`);
     }
     rent.rejected = false;
     rent.admin = admin;
@@ -96,7 +96,7 @@ export class RentService {
 
     await this.rentRepository.save(rent);
     return {
-      mensaje: 'Rent aprobada',
+      mensaje: 'Rent approved',
       idRenta: rent.id,
       rejected: rent.rejected,
       acceptedDate: rent.acceptedDate,
@@ -105,13 +105,13 @@ export class RentService {
     };
   }
 
-  async rechazar(admin: User, id: number) {
-    const rent = await this.rentRepository.obtenerRentaPorID(id);
+  async reject(admin: User, id: number) {
+    const rent = await this.rentRepository.findRentById(id);
     if (!rent) {
-      throw new NotFoundException(`Rent con ID ${id} no encontrado`);
+      throw new NotFoundException(`Rent with ID ${id} not found`);
     }
     if (rent.admin) {
-      throw new BadRequestException(`Rent ${id} ya está aprobado o rechazado`);
+      throw new BadRequestException(`Rent ${id} is already approved or rejected`);
     }
     rent.rejected = true;
     rent.admin = admin;
@@ -121,7 +121,7 @@ export class RentService {
     await this.rentRepository.save(rent);
 
     return {
-      mensaje: 'Rent rechazada',
+      mensaje: 'Rent rejected',
       idRenta: rent.id,
       rejected: rent.rejected,
       acceptedDate: rent.acceptedDate,
@@ -130,8 +130,8 @@ export class RentService {
     };
   }
 
-  async obtenerRentasDeCliente(idUser: number) {
-    const rents = await this.rentRepository.findRentasByUserId(idUser);
+  async getClientRents(idUser: number) {
+    const rents = await this.rentRepository.findRentByUserId(idUser);
 
     return rents.map(rent =>
       plainToInstance(ResponseRentDto, rent, {

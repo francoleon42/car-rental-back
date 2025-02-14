@@ -12,37 +12,35 @@ export class CarController {
   constructor(private readonly carService: CarService) {
   }
 
-//USUARIO
   @Get()
   @Roles('client', 'admin')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   obtenerTodos() {
-    return this.carService.findAll();
+    return this.carService.getCars();
   }
 
   @Get('/:id')
   @Roles( 'admin')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   obtenerCar(@Param('id') id: number) {
-    return this.carService.obtenerCar(id);
+    return this.carService.getCar(id);
   }
-//CLIENTE
-  @Get('/detalle/:id')
+
+  @Get('/detail/:id')
   @Roles('client')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   obtenerDetalle(@Param('id') id: number) {
-    return this.carService.obtenerDetalle(+id);
+    return this.carService.getDetail(+id);
   }
 
-// ADMIN
-  @Post('/crear')
+  @Post('/create')
   @Roles('admin')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   create(@Body() createCarDto: CreateCarDto) {
     return this.carService.create(createCarDto);
   }
 
-  @Patch('/actualizar/:id')
+  @Patch('/update/:id')
   @Roles('admin')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   async actualizar(@Param('id') id: number, @Body() updateCarDto: UpdateCarDto) {

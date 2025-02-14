@@ -17,14 +17,12 @@ export class DocumentController {
               private readonly userRepository: Repository<User>) {
   }
 
-
-  // USUARIO(admin y cliente)
   @Post('/crear')
   @Roles('client', 'admin')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   async create(@Body() createDocumentDto: CreateDocumentDto, @UserDecorator() user: User) {
     if (!user) {
-      throw new Error('Usuario no encontrado');
+      throw new Error('User not find');
     }
     return this.documentService.create(user,createDocumentDto);
   }

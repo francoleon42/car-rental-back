@@ -21,8 +21,8 @@ export class UserService {
   ) {
   }
 
-  async obtenerClientes() {
-    const users = await this.userRepository.obtenerClientes();
+  async getClients() {
+    const users = await this.userRepository.findClients();
     return users.map(user =>
       plainToInstance(UsuarioResponseDto, user, {
         excludeExtraneousValues: true,
@@ -31,7 +31,7 @@ export class UserService {
     );
   }
 
-  async obtenerUsuario(id: number) {
+  async getUser(id: number) {
     const user = await this.userRepository.findOneBy({ id });
     return plainToInstance(UsuarioResponseDto, user, {
       excludeExtraneousValues: true,
@@ -39,7 +39,7 @@ export class UserService {
     });
   }
 
-  async actualizar(usuario: User, updateUserDto: UpdateUserDto) {
+  async update(usuario: User, updateUserDto: UpdateUserDto) {
     usuario.firstName = updateUserDto.firstName;
     usuario.lastName = updateUserDto.lastName;
     usuario.dob = updateUserDto.dob;

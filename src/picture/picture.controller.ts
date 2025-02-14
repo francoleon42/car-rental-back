@@ -10,20 +10,18 @@ import { RolesGuard } from '../common/decorators/roles.guard';
 export class PictureController {
   constructor(private readonly pictureService: PictureService) {}
 
-  // ADMIN:
-  @Post('/crear_por_car/:idCar')
+  @Post('/upload-for-car/:idCar')
   @Roles('admin')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   create(@Param('idCar') idCar: number, @Body() createPictureDto: CreatePictureDto) {
     return this.pictureService.create(idCar,createPictureDto);
   }
 
-  // gestionar las imágenes:
   @Get('/car/:idCar')
   @Roles('admin')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   findOne(@Param('idCar') idCar: number) {
-    return this.pictureService.obtenerPicturesPorCar(idCar);
+    return this.pictureService.getPicturesByCar(idCar);
   }
   @Delete(':id')
   @Roles('admin')

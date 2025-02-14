@@ -21,66 +21,64 @@ export class RentController {
   ) {
   }
 
-  // CLIENTE :
-  @Post('/crear')
+  @Post('/create')
   @Roles('client')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   async create(@Body() createRentDto: CreateRentDto, @UserDecorator() user: User) {
     if (!user) {
-      throw new Error('Usuario no encontrado');
+      throw new Error('User not found');
     }
     if (user.role != Role.CLIENT) {
-      throw new Error('El usuario no es cliente');
+      throw new Error('User is not a client');
     }
     return this.rentService.create(createRentDto, user);
   }
 
-  @Get('/mis_solicitudes')
+  @Get('/my-requests')
   @Roles('client')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
-  async  obtenerSolicitudesDeUsuario(@UserDecorator() user: User) {
+  async  getMyRequests(@UserDecorator() user: User) {
     if (!user) {
-      throw new Error('Usuario no encontrado');
+      throw new Error('User not found');
     }
     if (user.role != Role.CLIENT) {
-      throw new Error('El usuario no es cliente');
+      throw new Error('User is not a client');
     }
-    return this.rentService.obtenerSolicitudesDeUsuario(user);
+    return this.rentService.getMyRequests(user);
   }
 
-  // ADMIN :
-  @Get('/solicitadas')
+  @Get('/pending-requests')
   @Roles('admin')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   obtenerRentSolicitadas() {
-    return this.rentService.obtenerRentSolicitadas();
+    return this.rentService.pendingRequests();
   }
 
-  @Patch('/aceptar/:id')
+  @Patch('/accept/:id')
   @Roles('admin')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
-  async rechazar(@Param('id') id: number, @UserDecorator() userAdmin: User) {
+  async accept(@Param('id') id: number, @UserDecorator() userAdmin: User) {
     if (!userAdmin) {
-      throw new Error('Usuario no encontrado');
+      throw new Error('User not found');
     }
-    return this.rentService.aceptar(userAdmin,+id);
+    return this.rentService.accept(userAdmin,+id);
   }
 
-  @Patch('/rechazar/:id')
+  @Patch('/reject/:id')
   @Roles('admin')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
-  async aceptar(@Param('id') id: number,  @UserDecorator() userAdmin: User) {
+  async reject(@Param('id') id: number,  @UserDecorator() userAdmin: User) {
     if (!userAdmin) {
-      throw new Error('Usuario no encontrado');
+      throw new Error('User not found');
     }
-    return this.rentService.rechazar(userAdmin,id);
+    return this.rentService.reject(userAdmin,id);
   }
 
-  @Get('cliente/:idCliente')
+  @Get('client/:clientId')
   @Roles('admin')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
-  async obtenerRentasDeCliente(@Param('idCliente') id: number){
-    return this.rentService.obtenerRentasDeCliente(id);
+  async getClientRents(@Param('clientId') id: number){
+    return this.rentService.getClientRents(id);
   }
 
 }

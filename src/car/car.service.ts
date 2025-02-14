@@ -6,7 +6,7 @@ import { CarRepository } from './car.repository';
 import { CarResponseDTO } from './dto/car-response-dto';
 import { Expose, plainToInstance } from 'class-transformer';
 import { PictureRepository } from '../picture/picture.repository';
-import { CarDetalleResponseDTO } from './dto/car-detalle-response-dto';
+import { CarDetailResponseDto } from './dto/car-detail-response-dto';
 import { Car } from './entities/car.entity';
 import { PictureResponseDto } from '../picture/dto/picture-response-dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -44,7 +44,7 @@ export class CarService {
     };
   }
 
-  async findAll() {
+  async getCars() {
     const cars = await this.carRepository.find();
     return cars.map(car =>
       plainToInstance(CarResponseDTO, car, {
@@ -54,17 +54,17 @@ export class CarService {
     );
   }
 
-  async obtenerCar(id:number){
+  async getCar(id:number){
     const car = await this.carRepository.findOne({ where: { id } });
     return plainToInstance(CarResponseDTO, car);
   }
 
-  async obtenerDetalle(id: number): Promise<CarDetalleResponseDTO> {
+  async getDetail(id: number): Promise<CarDetailResponseDto> {
     const car = await this.carRepository.findCarByIdWithImages(id);
     if (!car) {
       throw new NotFoundException(`Car with ID ${id} not found`);
     }
-    return plainToInstance(CarDetalleResponseDTO, {
+    return plainToInstance(CarDetailResponseDto, {
       carResponseDTO: car,
       picturesResponseDTO: car.img,
     });

@@ -8,7 +8,7 @@ import { Picture } from './entities/picture.entity';
 import { PictureRepository } from './picture.repository';
 import { CarPicture } from '../common/enums/car-picture.enum';
 import { plainToInstance } from 'class-transformer';
-import { CarDetalleResponseDTO } from '../car/dto/car-detalle-response-dto';
+import { CarDetailResponseDto } from '../car/dto/car-detail-response-dto';
 import { PictureResponseDto } from './dto/picture-response-dto';
 import { CarResponseDTO } from '../car/dto/car-response-dto';
 
@@ -25,7 +25,7 @@ export class PictureService {
   async create(idCar: number, createPictureDto: CreatePictureDto) {
     const car = await this.carRepository.findCarById(idCar);
     if (!car) {
-      throw new Error('car no encontrado');
+      throw new Error('car not find');
     }
     const picture = new Picture();
     picture.car = car;
@@ -47,10 +47,10 @@ export class PictureService {
     };
   }
 
-  async obtenerPicturesPorCar(id: number) {
+  async getPicturesByCar(id: number) {
     const pictures = await this.pictureRepository.findPicturesByCar(id);
     if (!pictures || pictures.length === 0) {
-      throw new NotFoundException(`No se encontraron imágenes para el coche con ID ${id}`);
+      throw new NotFoundException(`No images were found for the car with ID ${id}`);
     }
     return pictures.map(image =>
       plainToInstance(PictureResponseDto, image, {

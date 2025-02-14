@@ -18,34 +18,31 @@ export class UserController {
               private readonly userRepository: Repository<User>,
   ) {}
 
-
-// USUARIO:
-  @Get('/informacion')
+  @Get('/information')
   @Roles('client', 'admin')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   async findOne(@UserDecorator() user: User) {
     if (!user) {
-      throw new Error('Usuario no encontrado');
+      throw new Error('User not found');
     }
-    return this.userService.obtenerUsuario(user.id);
+    return this.userService.getUser(user.id);
   }
 
-  @Patch('/actualizar')
+  @Patch('/update')
   @Roles('client', 'admin')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   async actualizar(@Body() updateUserDto: UpdateUserDto, @UserDecorator() user: User) {
     if (!user) {
-      throw new Error('Usuario no encontrado');
+      throw new Error('User not found');
     }
-    return this.userService.actualizar(user, updateUserDto);
+    return this.userService.update(user, updateUserDto);
   }
 
-  //ADMIN :
-  @Get('/cliente')
+  @Get('/client')
   @Roles('admin')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   obtenerClientes() {
-    return this.userService.obtenerClientes();
+    return this.userService.getClients();
   }
 
 }

@@ -58,9 +58,9 @@ describe('AppController (e2e)', () => {
 
   //==========USER=======
 
-  it('/user/informacion (GET) debería retornar la información del usuario', async () => {
+  it('/user/information (GET) debería retornar la información del usuario', async () => {
     const response = await request(app.getHttpServer())
-      .get('/user/informacion')
+      .get('/user/information')
       .set('Authorization', `Bearer ${authTokenClient}`)
       .expect(200);
 
@@ -74,7 +74,7 @@ describe('AppController (e2e)', () => {
       }),
     );
   });
-  it('/user/actualizar (PATCH) debería actualizar los datos del usuario', async () => {
+  it('/user/update (PATCH) debería actualizar los datos del usuario', async () => {
     const updateData = {
       firstName: 'Juan',
       lastName: 'Pérez',
@@ -84,7 +84,7 @@ describe('AppController (e2e)', () => {
     };
 
     const response = await request(app.getHttpServer())
-      .patch('/user/actualizar')
+      .patch('/user/update')
       .set('Authorization', `Bearer ${authTokenClient}`)
       .send(updateData)
       .expect(200);
@@ -102,9 +102,9 @@ describe('AppController (e2e)', () => {
       }),
     );
   });
-  it(' /user/cliente (GET)- debería retornar la lista de clientes', async () => {
+  it(' /user/client (GET)- debería retornar la lista de clientes', async () => {
     const response = await request(app.getHttpServer())
-      .get('/user/cliente')
+      .get('/user/client')
       .set('Authorization', `Bearer ${authTokenAdmin}`)
       .expect(200);
 
@@ -125,7 +125,7 @@ describe('AppController (e2e)', () => {
 
   // ==========CAR ==========
 
-  it('/cars/crear (POST) Debe crear un carro y devolver los datos correctamente', async () => {
+  it('/cars/create (POST) Debe crear un carro y devolver los datos correctamente', async () => {
     const carData = {
       brand: 'Toyota',
       model: 'modelA',
@@ -136,7 +136,7 @@ describe('AppController (e2e)', () => {
     };
 
     const response = await request(app.getHttpServer())
-      .post('/cars/crear')
+      .post('/cars/create')
       .send(carData)
       .set('Authorization', `Bearer ${authTokenAdmin}`)
       .expect(201);
@@ -169,10 +169,10 @@ describe('AppController (e2e)', () => {
       ]),
     );
   });
-  it('/cars/detalle/:id (GET) debería obtener los detalles de un car', async () => {
+  it('/cars/detail/:id (GET) debería obtener los detalles de un car', async () => {
     const carId = 1;
     const response = await request(app.getHttpServer())
-      .get(`/cars/detalle/${carId}`)
+      .get(`/cars/detail/${carId}`)
       .set('Authorization', `Bearer ${authTokenClient}`)
       .expect(200);
 
@@ -196,7 +196,7 @@ describe('AppController (e2e)', () => {
       }),
     );
   });
-  it('/cars/actualizar/:id (PATCH) debería actualizar los datos de un carro', async () => {
+  it('/cars/update/:id (PATCH) debería actualizar los datos de un carro', async () => {
     const carId = 1;
     const updateData = {
       brand: 'Editado',
@@ -208,7 +208,7 @@ describe('AppController (e2e)', () => {
     };
 
     const response = await request(app.getHttpServer())
-      .patch(`/cars/actualizar/${carId}`)
+      .patch(`/cars/update/${carId}`)
       .set('Authorization', `Bearer ${authTokenAdmin}`)
       .send(updateData)
       .expect(200);
@@ -224,7 +224,7 @@ describe('AppController (e2e)', () => {
 
 //========== PICTURE ================
 
-  it('/picture/crear_por_car/:id (POST) debería crear una imagen para un carro', async () => {
+  it('/picture/upload-for-car/:id (POST) debería crear una imagen para un carro', async () => {
     const carId = 1;
     const pictureData = {
       src: 'https://example.com/car-image.jpg',
@@ -234,7 +234,7 @@ describe('AppController (e2e)', () => {
     };
 
     const response = await request(app.getHttpServer())
-      .post(`/picture/crear_por_car/${carId}`)
+      .post(`/picture/upload-for-car/${carId}`)
       .set('Authorization', `Bearer ${authTokenAdmin}`)
       .send(pictureData)
       .expect(201);
@@ -291,7 +291,7 @@ describe('AppController (e2e)', () => {
 
   //======== RENTA  =================
 
-  it('/rent/crear (POST) Debe crear una renta y devolver los datos correctamente', async () => {
+  it('/rent/create (POST) Debe crear una renta y devolver los datos correctamente', async () => {
     const rentData = {
       idCarARentar: 1,
       startingDate: '2025-02-10T09:00:00Z',
@@ -299,7 +299,7 @@ describe('AppController (e2e)', () => {
     };
 
     const response = await request(app.getHttpServer())
-      .post('/rent/crear')
+      .post('/rent/create')
       .send(rentData)
       .set('Authorization', `Bearer ${authTokenClient}`)
       .expect(201);
@@ -311,9 +311,9 @@ describe('AppController (e2e)', () => {
       dueDate: rentData.dueDate,
     });
   });
-  it('/rent/solicitadas (GET)- debería devolver la lista de rentas solicitadas', async () => {
+  it('/rent/pending-requests (GET)- debería devolver la lista de rentas solicitadas', async () => {
     const response = await request(app.getHttpServer())
-      .get('/rent/solicitadas')
+      .get('/rent/pending-requests')
       .set('Authorization', `Bearer ${authTokenAdmin}`)
       .expect(200);
 
@@ -333,9 +333,9 @@ describe('AppController (e2e)', () => {
       ]),
     );
   });
-  it(' /rent/mis_solicitudes (GET)- debería devolver la lista de solicitudes de renta del usuario', async () => {
+  it(' /rent/my-requests (GET)- debería devolver la lista de solicitudes de renta del usuario', async () => {
     const response = await request(app.getHttpServer())
-      .get('/rent/mis_solicitudes')
+      .get('/rent/my-requests')
       .set('Authorization', `Bearer ${authTokenClient}`)
       .expect(200);
 
@@ -355,9 +355,9 @@ describe('AppController (e2e)', () => {
       ]),
     );
   });
-  it(' /rent/cliente/1 (GET) - debería devolver la lista de solicitudes de renta del cliente con ID por paramatro', async () => {
+  it(' /rent/client/:idClient (GET) - debería devolver la lista de solicitudes de renta del cliente con ID por paramatro', async () => {
     const response = await request(app.getHttpServer())
-      .get('/rent/cliente/1')
+      .get('/rent/client/1')
       .set('Authorization', `Bearer ${authTokenAdmin}`)
       .expect(200);
 
@@ -377,14 +377,14 @@ describe('AppController (e2e)', () => {
       ]),
     );
   });
-  it(' /rent/aceptar/:idRent (PATCH)- debería aprobar la renta ', async () => {
+  it(' /rent/accept/:idRent (PATCH)- debería aprobar la renta ', async () => {
     const response = await request(app.getHttpServer())
-      .patch('/rent/aceptar/1')
+      .patch('/rent/accept/1')
       .set('Authorization', `Bearer ${authTokenAdmin}`)
       .expect(200);
 
     expect(response.body).toEqual({
-      mensaje: 'Rent aprobada',
+      mensaje: 'Rent approved',
       idRenta: 1,
       rejected: false,
       acceptedDate: expect.any(String),
@@ -392,14 +392,14 @@ describe('AppController (e2e)', () => {
       updatedAt: expect.any(String),
     });
   });
-  it(' /rent/rechazar/:idRent  (PATCH)- debería rechazar la renta ', async () => {
+  it(' /rent/reject/:idRent  (PATCH)- debería rechazar la renta ', async () => {
     const response = await request(app.getHttpServer())
-      .patch('/rent/rechazar/2')
+      .patch('/rent/reject/2')
       .set('Authorization', `Bearer ${authTokenAdmin}`)
       .expect(200);
 
     expect(response.body).toEqual({
-      mensaje: 'Rent rechazada',
+      mensaje: 'Rent rejected',
       idRenta: 2,
       rejected: true,
       acceptedDate: null,

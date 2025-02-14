@@ -10,7 +10,7 @@ export class UserRepository extends Repository<User> {
     super(User, dataSource.createEntityManager());
   }
 
-  async obtenerClientes(): Promise<User[]> {
+  async findClients(): Promise<User[]> {
     return this.find({
       where: { role: Role.CLIENT },
     });

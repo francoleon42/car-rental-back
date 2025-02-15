@@ -7,10 +7,11 @@ import { Rent } from '../rent/entities/rent.entity';
 import { User } from '../user/entities/user.entity';
 import { CarModule } from '../car/car.module';
 import { Document } from './entities/document.entity';
+import { S3Module } from 'src/s3/s3.module';
 
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Document,User])],
+  imports: [TypeOrmModule.forFeature([Document,User]),S3Module],
   controllers: [DocumentController],
   providers: [DocumentService, DocumentRepository],
   exports: [ DocumentRepository ]

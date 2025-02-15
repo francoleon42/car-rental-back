@@ -9,7 +9,7 @@ export class Document {
   @Column()
   url: string;
 
-  @Column()
+  @Column({  nullable: true }) 
   src: string;
 
   @Column()

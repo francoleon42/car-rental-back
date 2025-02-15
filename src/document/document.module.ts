@@ -7,7 +7,7 @@ import { Rent } from '../rent/entities/rent.entity';
 import { User } from '../user/entities/user.entity';
 import { CarModule } from '../car/car.module';
 import { Document } from './entities/document.entity';
-import { S3Module } from 'src/s3/s3.module';
+import { S3Module } from '../s3/s3.module';
 
 
 @Module({

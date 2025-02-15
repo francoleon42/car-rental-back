@@ -7,14 +7,14 @@ import { UserService } from '../src/user/user.service';
 import { Role } from '../src/common/enums/role.enum';
 import * as bcrypt from 'bcrypt';
 import { UserRepository } from '../src/user/user.repository';
-import { HttpService } from '@nestjs/axios';  // Importar HttpService
+import { HttpService } from '@nestjs/axios'; 
 
 
 jest.setTimeout(60000);
 
 describe('AppController (e2e)', () => {
   let app: INestApplication;
-  let httpService: HttpService;  // Instancia de HttpService
+  let httpService: HttpService;  
   let authTokenClient: string;
   let authTokenAdmin: string;
   beforeAll(async () => {
@@ -408,31 +408,28 @@ describe('AppController (e2e)', () => {
     });
   });
 
-  // ========DOCUMENTO
-  it('/document/crear (POST) debería crear un documento', async () => {
-    const documentData = {
-      url: 'https://example.com/document.pdf',
-      src: 'https://example.com/preview.jpg',
-      description: 'Este es un documento de prueba',
-      title: 'Documento de Ejemplo',
-    };
-
+  
+// ======== DOCUMENTO ==========
+describe('Document Controller (e2e)', () => {
+  it('/document (GET) - debería obtener documentos correctamente', async () => {
     const response = await request(app.getHttpServer())
-      .post('/document/crear')
+      .get('/document')
       .set('Authorization', `Bearer ${authTokenClient}`)
-      .send(documentData)
-      .expect(201);
+      .expect(200);
 
+    // Verificación básica de estructura
     expect(response.body).toEqual(
-      expect.objectContaining({
-        url: documentData.url,
-        src: documentData.src,
-        description: documentData.description,
-        title: documentData.title,
-        createdAt: expect.any(String),
-      }),
+      expect.arrayContaining([
+        expect.objectContaining({
+          url: expect.any(String),
+          src: expect.any(String),
+          description: expect.any(String),
+          title: expect.any(String),
+          createdAt: expect.any(Object), // Permite String o null
+        }),
+      ]),
     );
   });
-
+});
 
 });

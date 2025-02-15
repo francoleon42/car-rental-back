@@ -36,7 +36,7 @@ export class DocumentController {
     return this.documentService.uploadFile(file,createDocumentDto,user);
   }
 
-  @Get('/documents')
+  @Get('')
   @Roles('client', 'admin')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   async getFiles(@UserDecorator() user: User) {

@@ -7,7 +7,7 @@ import { Column, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Rent } from '../rent/entities/rent.entity';
 import { CarService } from '../car/car.service';
-import { S3Service } from 'src/s3/s3.service';
+import { S3Service } from '../s3/s3.service';
 import { plainToInstance } from 'class-transformer';
 import { DocumentRepository } from './document.repository';
 import { ResponseDocumentDTO } from './dto/response-document.dto';
@@ -18,7 +18,6 @@ export class DocumentService {
   constructor(
     @InjectRepository(DocumentRepository)
     private readonly documentRepository: DocumentRepository,
-
     private s3Service: S3Service,
   ) {
   }

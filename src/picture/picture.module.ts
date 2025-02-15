@@ -8,10 +8,11 @@ import { CarModule } from '../car/car.module';
 import { Picture } from './entities/picture.entity';
 import { User } from '../user/entities/user.entity';
 import { Car } from '../car/entities/car.entity';
+import { S3Module } from '../s3/s3.module';
 
 @Module({
 
-  imports: [TypeOrmModule.forFeature([Picture,Car]),CarModule],
+  imports: [TypeOrmModule.forFeature([Picture,Car]),CarModule, S3Module],
   controllers: [PictureController],
   providers: [PictureService,PictureRepository],
   exports: [ PictureRepository]

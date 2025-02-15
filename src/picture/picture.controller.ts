@@ -1,10 +1,22 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+  UploadedFile,
+  UseInterceptors,
+} from '@nestjs/common';
 import { PictureService } from './picture.service';
 import { CreatePictureDto } from './dto/create-picture.dto';
 import { UpdatePictureDto } from './dto/update-picture.dto';
 import { Roles } from '../common/decorators/roles.decorator';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from '../common/decorators/roles.guard';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('picture')
 export class PictureController {
@@ -13,8 +25,9 @@ export class PictureController {
   @Post('/upload-for-car/:idCar')
   @Roles('admin')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
-  create(@Param('idCar') idCar: number, @Body() createPictureDto: CreatePictureDto) {
-    return this.pictureService.create(idCar,createPictureDto);
+  @UseInterceptors(FileInterceptor('file'))
+  create(@UploadedFile() file: Express.Multer.File, @Param('idCar') idCar: number, @Body() createPictureDto: CreatePictureDto) {
+    return this.pictureService.create(file,idCar,createPictureDto);
   }
 
   @Get('/car/:idCar')

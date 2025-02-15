@@ -11,6 +11,7 @@ import { plainToInstance } from 'class-transformer';
 import { CarDetailResponseDto } from '../car/dto/car-detail-response-dto';
 import { PictureResponseDto } from './dto/picture-response-dto';
 import { CarResponseDTO } from '../car/dto/car-response-dto';
+import { S3Service } from '../s3/s3.service';
 
 @Injectable()
 export class PictureService {
@@ -19,17 +20,19 @@ export class PictureService {
     private readonly pictureRepository: PictureRepository,
     @InjectRepository(CarRepository)
     private readonly carRepository: CarRepository,
+    private s3Service: S3Service,
   ) {
   }
 
-  async create(idCar: number, createPictureDto: CreatePictureDto) {
+  async create(file: Express.Multer.File, idCar: number, createPictureDto: CreatePictureDto) {
+    const fileResponse = await this.s3Service.uploadFile(file);
     const car = await this.carRepository.findCarById(idCar);
     if (!car) {
       throw new Error('car not find');
     }
     const picture = new Picture();
     picture.car = car;
-    picture.src = createPictureDto.src;
+    picture.src = fileResponse.fileUrl;
     picture.description = createPictureDto.description;
     picture.title = createPictureDto.title;
     picture.carPicture = CarPicture[createPictureDto.carPicture.toUpperCase() as keyof typeof CarPicture] || CarPicture.OTHER;
